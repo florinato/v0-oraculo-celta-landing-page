@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Faltan parámetros requeridos: message, question, o cards." }, { status: 400 });
     }
 
+    console.log("[v0] Chat API called with:", { message, conversationId, question: question, cardCount: cards.length });
+
     const difyApiKey = process.env.DIFY_API_KEY;
     const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1";
 
