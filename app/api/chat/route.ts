@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Dify API key not configured" }, { status: 500 })
     }
 
-    const context = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". Las cartas: ${cards?.join(", ") || "cartas místicas"}. Responde en español con tono místico pero accesible.`
+    const context = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cards?.map((card: { carta: string; posicion: string; orientacion: string }, index: number) => `Carta ${index + 1}: ${card.carta} (${card.posicion}, ${card.orientacion})`).join(". ")}. Responde en español con tono místico pero accesible.`
 
     const requestBody = {
       inputs: {},
