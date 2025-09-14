@@ -13,6 +13,11 @@ function ReadingContent() {
   const [cartas, setCartas] = useState<Card[]>([])
 
   useEffect(() => {
+    // Asegurarse de que este código solo se ejecute en el cliente
+    if (typeof window === "undefined") {
+      return
+    }
+
     const fetchReading = async () => {
       const question = searchParams.get("pregunta")
       const storedCards = localStorage.getItem("tirada_cartas")
@@ -53,7 +58,7 @@ function ReadingContent() {
     }
 
     fetchReading()
-  }, [searchParams])
+  }, [searchParams]) // La dependencia es correcta, el efecto se ejecutará en el cliente
 
   if (isLoading) {
     return (
