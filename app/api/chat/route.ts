@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     const requestBody = {
       inputs: {},
-      query: `${context}\n\nPregunta del usuario: ${message}`,
+      query: conversationId ? message : context,
       response_mode: "blocking",
       user: "tarot-user",
       ...(conversationId && { conversation_id: conversationId }),
