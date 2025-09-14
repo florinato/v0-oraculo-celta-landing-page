@@ -303,6 +303,7 @@ function ReadingContent() {
             carta: card.name,
             posicion: celticCrossPositions[index].name,
             orientacion: cardOrientations[index] ? "derecha" : "invertida",
+            description: card.description[cardOrientations[index] ? "upright" : "reversed"],
           })),
         }),
       })
