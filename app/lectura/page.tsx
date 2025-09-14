@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect, Suspense, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Sparkles, Moon, ArrowLeft } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Moon, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 const celticCrossPositions = [
   { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
@@ -299,7 +299,11 @@ function ReadingContent() {
         body: JSON.stringify({
           message: `Hola Madame Elara, mi pregunta es: "${pregunta}". Por favor, interpreta mi tirada de la Cruz Celta.`,
           question: pregunta,
-          cards: shuffledCards.map((card) => card.name),
+          cards: shuffledCards.map((card, index) => ({
+            carta: card.name,
+            posicion: celticCrossPositions[index].name,
+            orientacion: cardOrientations[index] ? "derecha" : "invertida",
+          })),
         }),
       })
 
@@ -352,7 +356,11 @@ function ReadingContent() {
             message: userMessage,
             conversationId: conversationId,
             question: question,
-            cards: shuffledCards.map((card) => card.name),
+            cards: shuffledCards.map((card, index) => ({
+              carta: card.name,
+              posicion: celticCrossPositions[index].name,
+              orientacion: cardOrientations[index] ? "derecha" : "invertida",
+            })),
           }),
         })
 
@@ -460,7 +468,7 @@ function ReadingContent() {
                         <div
                           className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90" : ""}`}
                         >
-                          <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20">
+                          <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20" >
                             <Image
                               src={card.image || "/placeholder.svg"}
                               alt={card.name}

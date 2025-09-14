@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -6,8 +6,8 @@ export async function POST(request: NextRequest) {
 
     console.log("[v0] Chat API called with:", { message, conversationId, question })
 
-    const difyApiKey = process.env.DIFY_API_KEY
-    const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
+    const difyApiKey = process.env.DIFY_API_KEY;
+    const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1";
 
     if (!difyApiKey) {
       console.log("[v0] Dify API key not configured")
