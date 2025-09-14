@@ -1,10 +1,28 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+interface Card {
+  carta: string;
+  posicion: string;
+  orientacion: string;
+  description: string;
+}
+
+const buildCardsContext = (cards: Card[]): string => {
+  return cards
+    .map(
+      (card) =>
+        `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}). Descripción: ${card.description}`
+    )
+    .join(". ");
+};
+
 export async function POST(request: NextRequest) {
   try {
-    const { message, conversationId, question, cards } = await request.json();
+    const { message, conversationId, question, cards }: { message: string; conversationId?: string; question: string; cards: Card[] } = await request.json();
 
-    console.log("[v0] Chat API called with:", { message, conversationId, question });
+    if (!message || !question || !cards || cards.length === 0) {
+      return NextResponse.json({ error: "Faltan parámetros requeridos: message, question, o cards." }, { status: 400 });
+    }
 
     const difyApiKey = process.env.DIFY_API_KEY;
     const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1";
@@ -14,7 +32,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Dify API key not configured" }, { status: 500 });
     }
 
-    const context = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cards?.map((card: { carta: string; posicion: string; orientacion: string; description: string }) => `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}). Descripción: ${card.description}`).join(". ")}. Responde en español con tono místico pero accesible.`;
+    const cardsDescription = buildCardsContext(cards);
+    const context = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cardsDescription}. Responde en español con tono místico pero accesible.`;
 
     const requestBody = {
       inputs: {},
