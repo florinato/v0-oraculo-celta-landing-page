@@ -1,36 +1,127 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Sparkles, Star, Moon, ArrowLeft } from "lucide-react"
+import { Sparkles, Moon, ArrowLeft } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Image from "next/image"
 
 const celticCrossPositions = [
-  { id: 1, name: "La situación actual", position: "col-start-2 row-start-2" },
-  { id: 2, name: "El desafío", position: "col-start-2 row-start-2 rotate-90" },
-  { id: 3, name: "El pasado distante", position: "col-start-1 row-start-2" },
-  { id: 4, name: "El futuro posible", position: "col-start-3 row-start-2" },
-  { id: 5, name: "La corona", position: "col-start-2 row-start-1" },
-  { id: 6, name: "La base", position: "col-start-2 row-start-3" },
-  { id: 7, name: "Tu enfoque", position: "col-start-4 row-start-4" },
-  { id: 8, name: "Influencias externas", position: "col-start-4 row-start-3" },
-  { id: 9, name: "Esperanzas y miedos", position: "col-start-4 row-start-2" },
-  { id: 10, name: "El resultado", position: "col-start-4 row-start-1" },
+  { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
+  { id: 2, name: "2. Lo que lo obstaculiza", position: "col-start-2 row-start-2" },
+  { id: 3, name: "3. Su base o raíz", position: "col-start-2 row-start-3" },
+  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-2" },
+  { id: 5, name: "5. Las posibilidades", position: "col-start-2 row-start-1" },
+  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-2" },
+  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-4" },
+  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-3" },
+  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-2" },
+  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
 ]
 
 const sampleCards = [
-  "El Mago",
-  "La Sacerdotisa",
-  "La Emperatriz",
-  "El Emperador",
-  "El Hierofante",
-  "Los Enamorados",
-  "El Carro",
-  "La Fuerza",
-  "El Ermitaño",
-  "La Rueda de la Fortuna",
+  {
+    name: "El Mago",
+    image: "/tarot-images/el-mago.jpg",
+    description: {
+      upright:
+        "El poder de la manifestación, la habilidad, el ingenio, la confianza en uno mismo. Tienes las herramientas, sabes cómo usarlas y crear tu realidad.",
+      reversed:
+        "La manipulación, la falta de habilidades, la inseguridad, la duda. No confías en tus capacidades, y el poder se vuelve en tu contra.",
+    },
+  },
+  {
+    name: "La Sacerdotisa",
+    image: "/tarot-images/la-sacerdotisa.jpg",
+    description: {
+      upright:
+        "La intuición, la sabiduría interior, los secretos, la paciencia. Escucha tu voz interior, ella te guiará por el camino correcto.",
+      reversed:
+        "Los secretos revelados, la superficialidad, la desconexión de la intuición. Ignoras la voz de tu alma, y te pierdes en la confusión.",
+    },
+  },
+  {
+    name: "La Emperatriz",
+    image: "/tarot-images/la-emperatriz.jpg",
+    description: {
+      upright:
+        "La abundancia, la fertilidad, la creatividad, la conexión con la naturaleza. La vida florece a tu alrededor, y te nutres de ella.",
+      reversed:
+        "La esterilidad, la falta de creatividad, la desconexión, la negligencia. Te alejas de la vida, y la inspiración se marchita.",
+    },
+  },
+  {
+    name: "El Emperador",
+    image: "/tarot-images/el-emperador.jpg",
+    description: {
+      upright:
+        "La estructura, el control, la autoridad, la estabilidad. Construyes un imperio sólido, basado en la razón y la disciplina.",
+      reversed:
+        "La tiranía, la falta de control, la rigidez, la inestabilidad. El poder se corrompe, y la estructura se derrumba.",
+    },
+  },
+  {
+    name: "El Hierofante",
+    image: "/tarot-images/el-hierofante.jpg",
+    description: {
+      upright:
+        "La tradición, la espiritualidad, el consejo, la guía. Buscas respuestas en la sabiduría ancestral, en la comunidad y en la fe.",
+      reversed:
+        "La rebeldía, la hipocresía, la conformidad, la rigidez. Te alejas de la tradición, pero te pierdes en el caos.",
+    },
+  },
+  {
+    name: "Los Enamorados",
+    image: "/tarot-images/los-enamorados.jpg",
+    description: {
+      upright:
+        "El amor, la unión, las decisiones importantes, las elecciones. Te enfrentas a una encrucijada, y debes elegir tu camino con el corazón.",
+      reversed:
+        "La desarmonía, la separación, la indecisión, el conflicto. Te debates entre dos caminos, y el amor se ve empañado.",
+    },
+  },
+  {
+    name: "El Carro",
+    image: "/tarot-images/el-carro.jpg",
+    description: {
+      upright:
+        "El triunfo, la voluntad, el control, la dirección. Con determinación, avanzas hacia tus metas, superando obstáculos.",
+      reversed:
+        "La falta de control, la derrota, la falta de dirección, la falta de disciplina. Te desvías del camino, y pierdes el control de tu destino.",
+    },
+  },
+  {
+    name: "La Fuerza",
+    image: "/tarot-images/la-fuerza.jpg",
+    description: {
+      upright:
+        "La valentía, la compasión, el autocontrol, la fuerza interior. Domina tus miedos y pasiones, y encuentra la fuerza en tu interior.",
+      reversed:
+        "La debilidad, la falta de control, la agresividad, la inseguridad. Te dejas llevar por tus impulsos, y la fuerza se vuelve en tu contra.",
+    },
+  },
+  {
+    name: "El Ermitaño",
+    image: "/tarot-images/el-ermitano.jpg",
+    description: {
+      upright:
+        "La introspección, la soledad, la búsqueda interior, la sabiduría. Te retiras del mundo para buscar respuestas en tu interior.",
+      reversed:
+        "El aislamiento, la soledad no deseada, la oscuridad, el miedo a la introspección. Te alejas de los demás, pero no encuentras la paz.",
+    },
+  },
+  {
+    name: "La Rueda de la Fortuna",
+    image: "/tarot-images/la-rueda-de-la-fortuna.jpg",
+    description: {
+      upright:
+        "El destino, el cambio, los ciclos, la buena fortuna. La rueda gira, y la vida te ofrece nuevas oportunidades.",
+      reversed:
+        "La mala suerte, la resistencia al cambio, la mala fortuna, la pérdida. Te aferras al pasado, y la rueda te arrastra hacia abajo.",
+    },
+  },
 ]
 
 function ReadingContent() {
@@ -39,40 +130,129 @@ function ReadingContent() {
   const [chatMessages, setChatMessages] = useState<Array<{ sender: string; message: string }>>([])
   const [newMessage, setNewMessage] = useState("")
   const [question, setQuestion] = useState("")
+  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
+  const hasInitialized = useRef(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const pregunta = searchParams.get("pregunta")
-    if (pregunta) {
+    if (pregunta && !hasInitialized.current) {
+      hasInitialized.current = true
       setQuestion(decodeURIComponent(pregunta))
+      setCardOrientations(Array.from({ length: 10 }, () => Math.random() > 0.5))
       setTimeout(() => {
         setShowReading(true)
         setTimeout(() => {
           setShowChat(true)
-          setChatMessages([
-            {
-              sender: "Madame Elara",
-              message: `Las cartas han hablado sobre tu pregunta: "${decodeURIComponent(pregunta)}". Veo una situación compleja que requiere de tu sabiduría interior. El Mago en tu posición actual indica que tienes todos los recursos necesarios para manifestar tus deseos, pero debes actuar con determinación y claridad de propósito.\n\nLa presencia de La Sacerdotisa sugiere que la intuición será tu mejor guía en este momento. Confía en esa voz interior que te susurra las respuestas que buscas. El camino hacia la resolución no será inmediato, pero cada paso que des con consciencia te acercará a tu objetivo.\n\nRecuerda que las cartas no predicen un destino fijo, sino que te muestran las energías presentes y las posibilidades que se abren ante ti. ¿Hay algún aspecto específico de esta lectura sobre el que te gustaría profundizar?`,
-            },
-          ])
+          initializeChat(decodeURIComponent(pregunta))
         }, 2000)
       }, 500)
     }
   }, [searchParams])
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
+  const initializeChat = async (pregunta: string) => {
+    setIsLoading(true)
+    try {
+      console.log("[v0] Initializing chat with question:", pregunta)
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Hola Madame Elara, mi pregunta es: "${pregunta}". Por favor, interpreta mi tirada de la Cruz Celta.`,
+          question: pregunta,
+          cards: sampleCards.map((card) => card.name),
+        }),
+      })
+
+      const data = await response.json()
+      console.log("[v0] Chat initialization response:", data)
+
+      if (data.conversationId) {
+        setConversationId(data.conversationId)
+      }
+
       setChatMessages([
-        ...chatMessages,
-        { sender: "Tú", message: newMessage },
         {
           sender: "Madame Elara",
           message:
-            "Las cartas revelan más detalles sobre tu consulta. Permíteme meditar un momento sobre las energías que percibo...",
+            data.message || "Bienvenido/a al reino de las cartas. Las energías están alineándose para tu consulta.",
         },
       ])
+    } catch (error) {
+      console.error("[v0] Error initializing chat:", error)
+      setChatMessages([
+        {
+          sender: "Madame Elara",
+          message:
+            "Las energías están perturbadas en este momento. Como Madame Elara, te invito a respirar profundamente y reconectar con tu intuición. Las cartas esperan pacientemente tu consulta.",
+        },
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSendMessage = async () => {
+    if (newMessage.trim() && !isLoading) {
+      const userMessage = newMessage
       setNewMessage("")
+
+      setChatMessages((prev) => [...prev, { sender: "Tú", message: userMessage }])
+
+      setIsLoading(true)
+
+      try {
+        console.log("[v0] Sending message:", userMessage)
+
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: userMessage,
+            conversationId: conversationId,
+            question: question,
+            cards: sampleCards.map((card) => card.name),
+          }),
+        })
+
+        const data = await response.json()
+        console.log("[v0] Message response:", data)
+
+        if (data.conversationId) {
+          setConversationId(data.conversationId)
+        }
+
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            sender: "Madame Elara",
+            message:
+              data.message ||
+              "Las cartas susurran secretos que requieren más claridad. Reformula tu pregunta, querido/a consultante.",
+          },
+        ])
+      } catch (error) {
+        console.error("[v0] Error sending message:", error)
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            sender: "Madame Elara",
+            message:
+              "Siento una interferencia en las energías cósmicas. Las cartas necesitan un momento para realinearse. Por favor, intenta de nuevo.",
+          },
+        ])
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -111,27 +291,49 @@ function ReadingContent() {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
 
-              <div className="grid grid-cols-4 grid-rows-4 gap-4 max-w-4xl mx-auto">
-                {celticCrossPositions.map((position, index) => (
-                  <Card
-                    key={position.id}
-                    className={`${position.position} bg-card border-primary/30 hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20`}
-                  >
-                    <CardContent className="p-4 text-center space-y-3">
-                      <div className="w-full h-24 bg-muted rounded-lg flex items-center justify-center border border-primary/20">
-                        <Star className="w-8 h-8 text-primary" />
+              <div className="grid grid-cols-4 grid-rows-4 gap-4 md:gap-8 max-w-xl mx-auto relative h-[700px]">
+                {celticCrossPositions.map((positionInfo, index) => {
+                  const isReversed = cardOrientations[index]
+                  const card = sampleCards[index]
+
+                  return (
+                    <div key={positionInfo.id} className={`absolute ${positionInfo.position}`}>
+                      <div
+                        className="relative cursor-pointer transition-all duration-300 hover:scale-110 hover:z-20 group"
+                        onMouseEnter={() => setHoveredCard(index)}
+                        onMouseLeave={() => setHoveredCard(null)}
+                      >
+                        <div
+                          className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90" : ""}`}
+                        >
+                          <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20">
+                            <Image
+                              src={card.image || "/placeholder.svg"}
+                              alt={card.name}
+                              width={88}
+                              height={152}
+                              className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-2">
+                          <p className="text-xs text-center text-muted-foreground font-medium">{positionInfo.name}</p>
+                        </div>
+
+                        <div className="absolute z-50 bg-card border border-primary/30 rounded-lg p-3 shadow-xl w-64 -top-4 left-full ml-4 transform opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          <h3 className="font-serif text-primary font-semibold mb-1">{positionInfo.name}</h3>
+                          <h4 className="font-semibold mb-2">
+                            {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
+                          </h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {isReversed ? card.description.reversed : card.description.upright}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-sm text-primary">
-                          {position.id}. {position.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {sampleCards[index]} {Math.random() > 0.5 ? "(derecha)" : "(invertida)"}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </section>
@@ -161,6 +363,20 @@ function ReadingContent() {
                         </div>
                       </div>
                     ))}
+                    {isLoading && (
+                      <div className="flex justify-start">
+                        <div className="max-w-3xl p-4 rounded-lg bg-muted mr-12">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Moon className="w-4 h-4 text-primary" />
+                            <p className="font-semibold text-sm">Madame Elara</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-primary animate-spin" />
+                            <p className="text-sm text-muted-foreground">Consultando las cartas...</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-3">
@@ -170,13 +386,14 @@ function ReadingContent() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                       className="flex-1 bg-background border-border focus:border-primary"
+                      disabled={isLoading}
                     />
                     <Button
                       onClick={handleSendMessage}
-                      disabled={!newMessage.trim()}
+                      disabled={!newMessage.trim() || isLoading}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
-                      Enviar
+                      {isLoading ? <Sparkles className="w-4 h-4 animate-spin" /> : "Enviar"}
                     </Button>
                   </div>
                 </CardContent>
