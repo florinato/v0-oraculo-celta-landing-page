@@ -72,6 +72,13 @@ export default function OracleHomePage() {
                 <Sparkles className="w-5 h-5 mr-2" />
                 Consultar al Oráculo
               </Button>
+
+              <div className="mt-8 p-4 bg-muted/50 rounded-lg border border-border">
+                <p className="text-sm text-muted-foreground text-center">
+                  🔒 <strong>Privacidad garantizada:</strong> No recopilamos ni almacenamos ningún dato de tu
+                  conversación. Todas las consultas son completamente privadas y confidenciales.
+                </p>
+              </div>
             </div>
           </div>
         </section>
