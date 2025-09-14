@@ -21,7 +21,17 @@ const celticCrossPositions = [
   { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
 ]
 
-const sampleCards = [
+const tarotCards = [
+  {
+    name: "El Loco",
+    image: "/tarot-images/el-loco.jpg",
+    description: {
+      upright:
+        "El inicio de un viaje, la fe ciega, la libertad, la inocencia, la espontaneidad. Un nuevo capítulo se abre, sin miedos, con la curiosidad como guía.",
+      reversed:
+        "La imprudencia, el miedo a dar el salto, la indecisión, la falta de dirección. Te aferras a lo conocido, temiendo lo desconocido.",
+    },
+  },
   {
     name: "El Mago",
     image: "/tarot-images/el-mago.jpg",
@@ -33,7 +43,7 @@ const sampleCards = [
     },
   },
   {
-    name: "La Sacerdotisa",
+    name: "La Suma Sacerdotisa",
     image: "/tarot-images/la-sacerdotisa.jpg",
     description: {
       upright:
@@ -122,7 +132,124 @@ const sampleCards = [
         "La mala suerte, la resistencia al cambio, la mala fortuna, la pérdida. Te aferras al pasado, y la rueda te arrastra hacia abajo.",
     },
   },
+  {
+    name: "La Justicia",
+    image: "/tarot-images/la-justicia.jpg",
+    description: {
+      upright:
+        "El equilibrio, la verdad, la justicia, la responsabilidad. Cosechas lo que siembras, y la justicia se impone.",
+      reversed:
+        "La injusticia, el desequilibrio, la falta de responsabilidad, la parcialidad. La verdad se distorsiona, y la balanza se inclina.",
+    },
+  },
+  {
+    name: "El Colgado",
+    image: "/tarot-images/el-colgado.jpg",
+    description: {
+      upright:
+        "El sacrificio, la perspectiva, la renuncia, la paciencia. Te entregas a una situación, y aprendes a ver las cosas desde una nueva perspectiva.",
+      reversed:
+        "El egoísmo, la resistencia al sacrificio, la impaciencia, la inacción. Te aferras a lo que no te sirve, y te niegas a cambiar.",
+    },
+  },
+  {
+    name: "La Muerte",
+    image: "/tarot-images/la-muerte.jpg",
+    description: {
+      upright:
+        "La transformación, el fin de un ciclo, la renovación, el cambio. Deja ir lo viejo, y prepárate para un nuevo comienzo.",
+      reversed:
+        "La resistencia al cambio, el estancamiento, el miedo a la muerte, la depresión. Te aferras al pasado, y te niegas a avanzar.",
+    },
+  },
+  {
+    name: "La Templanza",
+    image: "/tarot-images/la-templanza.jpg",
+    description: {
+      upright:
+        "El equilibrio, la armonía, la moderación, la paciencia. Encuentras la paz en la moderación, y te adaptas a las circunstancias.",
+      reversed:
+        "El desequilibrio, la impaciencia, la falta de armonía, el exceso. Te excedes en todo, y pierdes el equilibrio.",
+    },
+  },
+  {
+    name: "El Diablo",
+    image: "/tarot-images/el-diablo.jpg",
+    description: {
+      upright:
+        "La atadura, la adicción, la sombra, la esclavitud. Estás atrapado en tus miedos y deseos, y te esclavizas a ellos.",
+      reversed:
+        "La liberación, la ruptura de ataduras, la superación de la sombra, la independencia. Te liberas de tus miedos, y recuperas tu libertad.",
+    },
+  },
+  {
+    name: "La Torre",
+    image: "/tarot-images/la-torre.jpg",
+    description: {
+      upright:
+        "La destrucción, el caos, el cambio repentino, la revelación. La estructura se derrumba, y te enfrentas a una crisis.",
+      reversed:
+        "La resistencia al cambio, el miedo al caos, la evitación de la crisis, la posposición. Te aferras a lo conocido, y evitas el inevitable cambio.",
+    },
+  },
+  {
+    name: "La Estrella",
+    image: "/tarot-images/la-estrella.jpg",
+    description: {
+      upright:
+        "La esperanza, la inspiración, la fe, la curación. La luz de la esperanza te guía, y te conectas con tu propósito.",
+      reversed:
+        "La desesperanza, la falta de inspiración, la duda, la falta de fe. Te alejas de tu propósito, y te pierdes en la oscuridad.",
+    },
+  },
+  {
+    name: "La Luna",
+    image: "/tarot-images/la-luna.jpg",
+    description: {
+      upright:
+        "La intuición, la ilusión, la incertidumbre, el miedo. Te enfrentas a tus miedos y a la oscuridad de tu subconsciente.",
+      reversed:
+        "La claridad, la verdad revelada, la superación del miedo, la liberación de la ilusión. La oscuridad se disipa, y la verdad sale a la luz.",
+    },
+  },
+  {
+    name: "El Sol",
+    image: "/tarot-images/el-sol.jpg",
+    description: {
+      upright: "La alegría, el éxito, la vitalidad, la claridad. La luz del sol te ilumina, y la felicidad te inunda.",
+      reversed:
+        "La tristeza, la falta de alegría, la falta de energía, la confusión. La alegría se desvanece, y la oscuridad te envuelve.",
+    },
+  },
+  {
+    name: "El Juicio",
+    image: "/tarot-images/el-juicio.jpg",
+    description: {
+      upright:
+        "La resurrección, el despertar, la evaluación, el juicio final. Te enfrentas a tus acciones, y te preparas para un nuevo comienzo.",
+      reversed:
+        "La duda, la autocrítica, la falta de perdón, la indecisión. Te juzgas a ti mismo, y te niegas a avanzar.",
+    },
+  },
+  {
+    name: "El Mundo",
+    image: "/tarot-images/el-mundo.jpg",
+    description: {
+      upright: "La realización, la plenitud, la integración, el éxito. Alcanzas tus metas, y te sientes completo.",
+      reversed:
+        "La falta de realización, la incompletitud, la falta de integración, el fracaso. No encuentras la satisfacción, y te sientes incompleto.",
+    },
+  },
 ]
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
 
 function ReadingContent() {
   const [showReading, setShowReading] = useState(false)
@@ -136,6 +263,7 @@ function ReadingContent() {
   const [clickedCard, setClickedCard] = useState<number | null>(null)
   const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
   const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [shuffledCards, setShuffledCards] = useState<typeof tarotCards>([])
   const hasInitialized = useRef(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -146,6 +274,7 @@ function ReadingContent() {
       hasInitialized.current = true
       setQuestion(decodeURIComponent(pregunta))
       setCardOrientations(Array.from({ length: 10 }, () => Math.random() > 0.5))
+      setShuffledCards(shuffleArray(tarotCards).slice(0, 10))
       setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
       setTimeout(() => {
         setShowReading(true)
@@ -170,7 +299,7 @@ function ReadingContent() {
         body: JSON.stringify({
           message: `Hola Madame Elara, mi pregunta es: "${pregunta}". Por favor, interpreta mi tirada de la Cruz Celta.`,
           question: pregunta,
-          cards: sampleCards.map((card) => card.name),
+          cards: shuffledCards.map((card) => card.name),
         }),
       })
 
@@ -223,7 +352,7 @@ function ReadingContent() {
             message: userMessage,
             conversationId: conversationId,
             question: question,
-            cards: sampleCards.map((card) => card.name),
+            cards: shuffledCards.map((card) => card.name),
           }),
         })
 
@@ -315,8 +444,10 @@ function ReadingContent() {
               <div className="grid grid-cols-4 grid-rows-4 gap-4 md:gap-8 max-w-xl mx-auto relative h-[700px]">
                 {celticCrossPositions.map((positionInfo, index) => {
                   const isReversed = cardOrientations[index]
-                  const card = sampleCards[index]
+                  const card = shuffledCards[index]
                   const showTooltip = isTouchDevice ? clickedCard === index : hoveredCard === index
+
+                  if (!card) return null
 
                   return (
                     <div key={positionInfo.id} className={`absolute ${positionInfo.position}`}>
