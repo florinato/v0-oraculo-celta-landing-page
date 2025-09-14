@@ -4,22 +4,52 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { generarTiradaCruzCelta } from "@/lib/tarot"
 import { Moon, Sparkles, Star } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function OracleHomePage() {
   const [question, setQuestion] = useState("")
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [respuesta, setRespuesta] = useState<string | null>(null)
 
-  const handleConsultOracle = () => {
+  const handleConsultOracle = async () => {
     if (!question.trim()) {
+      setError("Por favor, escribe tu pregunta para las cartas.")
       return
     }
 
-    const cartas = generarTiradaCruzCelta()
-    localStorage.setItem("tirada_cartas", JSON.stringify(cartas))
-    const encodedQuestion = encodeURIComponent(question)
-    router.push(`/lectura?pregunta=${encodedQuestion}`)
+    setIsLoading(true)
+    setError(null)
+    setRespuesta(null)
+
+    try {
+      // 1. Generar la tirada de cartas
+      const cartas = generarTiradaCruzCelta()
+
+      // 2. Llamar a la API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "Interpreta esta tirada para mi pregunta.",
+          question: question,
+          cards: cartas,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || data.fallback) {
+        throw new Error(data.message || "Un misterioso velo impide ver la respuesta.")
+      }
+
+      // 3. Mostrar la respuesta
+      setRespuesta(data.message)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -71,12 +101,25 @@ export default function OracleHomePage() {
               <Button
                 onClick={handleConsultOracle}
                 size="lg"
-                className="w-full md:w-auto px-12 py-4 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
-                disabled={!question.trim()}
+                className="w-full md:w-auto px-12 py-4 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
+                disabled={!question.trim() || isLoading}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                Consultar al Oráculo
+                {isLoading ? "Consultando el destino..." : "Consultar al Oráculo"}
               </Button>
+
+              {error && (
+                <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-destructive text-center font-medium">{error}</p>
+                </div>
+              )}
+
+              {respuesta && (
+                <div className="mt-8 p-6 bg-card border border-border rounded-lg text-left animate-fade-in">
+                  <h3 className="text-2xl font-serif text-primary mb-4">La Visión de Elara</h3>
+                  <p className="text-foreground/90 whitespace-pre-wrap leading-relaxed">{respuesta}</p>
+                </div>
+              )}
 
               <div className="mt-8 p-4 bg-muted/50 rounded-lg border border-border">
                 <p className="text-sm text-muted-foreground text-center">

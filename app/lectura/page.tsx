@@ -1,106 +1,591 @@
 "use client"
 
-import { Card } from "@/lib/tarot"
-import { Loader2, Sparkles } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { Suspense, useEffect, useState } from "react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Moon, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
+
+const celticCrossPositions = [
+  { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
+  { id: 2, name: "2. Lo que lo obstaculiza", position: "col-start-2 row-start-2" },
+  { id: 3, name: "3. Su base o raíz", position: "col-start-2 row-start-3" },
+  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-2" },
+  { id: 5, name: "5. Las posibilidades", position: "col-start-2 row-start-1" },
+  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-2" },
+  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-4" },
+  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-3" },
+  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-2" },
+  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
+]
+
+const tarotCards = [
+  {
+    name: "El Loco",
+    image: "/tarot-images/el-loco.jpg",
+    description: {
+      upright:
+        "El inicio de un viaje, la fe ciega, la libertad, la inocencia, la espontaneidad. Un nuevo capítulo se abre, sin miedos, con la curiosidad como guía.",
+      reversed:
+        "La imprudencia, el miedo a dar el salto, la indecisión, la falta de dirección. Te aferras a lo conocido, temiendo lo desconocido.",
+    },
+  },
+  {
+    name: "El Mago",
+    image: "/tarot-images/el-mago.jpg",
+    description: {
+      upright:
+        "El poder de la manifestación, la habilidad, el ingenio, la confianza en uno mismo. Tienes las herramientas, sabes cómo usarlas y crear tu realidad.",
+      reversed:
+        "La manipulación, la falta de habilidades, la inseguridad, la duda. No confías en tus capacidades, y el poder se vuelve en tu contra.",
+    },
+  },
+  {
+    name: "La Suma Sacerdotisa",
+    image: "/tarot-images/la-sacerdotisa.jpg",
+    description: {
+      upright:
+        "La intuición, la sabiduría interior, los secretos, la paciencia. Escucha tu voz interior, ella te guiará por el camino correcto.",
+      reversed:
+        "Los secretos revelados, la superficialidad, la desconexión de la intuición. Ignoras la voz de tu alma, y te pierdes en la confusión.",
+    },
+  },
+  {
+    name: "La Emperatriz",
+    image: "/tarot-images/la-emperatriz.jpg",
+    description: {
+      upright:
+        "La abundancia, la fertilidad, la creatividad, la conexión con la naturaleza. La vida florece a tu alrededor, y te nutres de ella.",
+      reversed:
+        "La esterilidad, la falta de creatividad, la desconexión, la negligencia. Te alejas de la vida, y la inspiración se marchita.",
+    },
+  },
+  {
+    name: "El Emperador",
+    image: "/tarot-images/el-emperador.jpg",
+    description: {
+      upright:
+        "La estructura, el control, la autoridad, la estabilidad. Construyes un imperio sólido, basado en la razón y la disciplina.",
+      reversed:
+        "La tiranía, la falta de control, la rigidez, la inestabilidad. El poder se corrompe, y la estructura se derrumba.",
+    },
+  },
+  {
+    name: "El Hierofante",
+    image: "/tarot-images/el-hierofante.jpg",
+    description: {
+      upright:
+        "La tradición, la espiritualidad, el consejo, la guía. Buscas respuestas en la sabiduría ancestral, en la comunidad y en la fe.",
+      reversed:
+        "La rebeldía, la hipocresía, la conformidad, la rigidez. Te alejas de la tradición, pero te pierdes en el caos.",
+    },
+  },
+  {
+    name: "Los Enamorados",
+    image: "/tarot-images/los-enamorados.jpg",
+    description: {
+      upright:
+        "El amor, la unión, las decisiones importantes, las elecciones. Te enfrentas a una encrucijada, y debes elegir tu camino con el corazón.",
+      reversed:
+        "La desarmonía, la separación, la indecisión, el conflicto. Te debates entre dos caminos, y el amor se ve empañado.",
+    },
+  },
+  {
+    name: "El Carro",
+    image: "/tarot-images/el-carro.jpg",
+    description: {
+      upright:
+        "El triunfo, la voluntad, el control, la dirección. Con determinación, avanzas hacia tus metas, superando obstáculos.",
+      reversed:
+        "La falta de control, la derrota, la falta de dirección, la falta de disciplina. Te desvías del camino, y pierdes el control de tu destino.",
+    },
+  },
+  {
+    name: "La Fuerza",
+    image: "/tarot-images/la-fuerza.jpg",
+    description: {
+      upright:
+        "La valentía, la compasión, el autocontrol, la fuerza interior. Domina tus miedos y pasiones, y encuentra la fuerza en tu interior.",
+      reversed:
+        "La debilidad, la falta de control, la agresividad, la inseguridad. Te dejas llevar por tus impulsos, y la fuerza se vuelve en tu contra.",
+    },
+  },
+  {
+    name: "El Ermitaño",
+    image: "/tarot-images/el-ermitano.jpg",
+    description: {
+      upright:
+        "La introspección, la soledad, la búsqueda interior, la sabiduría. Te retiras del mundo para buscar respuestas en tu interior.",
+      reversed:
+        "El aislamiento, la soledad no deseada, la oscuridad, el miedo a la introspección. Te alejas de los demás, pero no encuentras la paz.",
+    },
+  },
+  {
+    name: "La Rueda de la Fortuna",
+    image: "/tarot-images/la-rueda-de-la-fortuna.jpg",
+    description: {
+      upright:
+        "El destino, el cambio, los ciclos, la buena fortuna. La rueda gira, y la vida te ofrece nuevas oportunidades.",
+      reversed:
+        "La mala suerte, la resistencia al cambio, la mala fortuna, la pérdida. Te aferras al pasado, y la rueda te arrastra hacia abajo.",
+    },
+  },
+  {
+    name: "La Justicia",
+    image: "/tarot-images/la-justicia.jpg",
+    description: {
+      upright:
+        "El equilibrio, la verdad, la justicia, la responsabilidad. Cosechas lo que siembras, y la justicia se impone.",
+      reversed:
+        "La injusticia, el desequilibrio, la falta de responsabilidad, la parcialidad. La verdad se distorsiona, y la balanza se inclina.",
+    },
+  },
+  {
+    name: "El Colgado",
+    image: "/tarot-images/el-colgado.jpg",
+    description: {
+      upright:
+        "El sacrificio, la perspectiva, la renuncia, la paciencia. Te entregas a una situación, y aprendes a ver las cosas desde una nueva perspectiva.",
+      reversed:
+        "El egoísmo, la resistencia al sacrificio, la impaciencia, la inacción. Te aferras a lo que no te sirve, y te niegas a cambiar.",
+    },
+  },
+  {
+    name: "La Muerte",
+    image: "/tarot-images/la-muerte.jpg",
+    description: {
+      upright:
+        "La transformación, el fin de un ciclo, la renovación, el cambio. Deja ir lo viejo, y prepárate para un nuevo comienzo.",
+      reversed:
+        "La resistencia al cambio, el estancamiento, el miedo a la muerte, la depresión. Te aferras al pasado, y te niegas a avanzar.",
+    },
+  },
+  {
+    name: "La Templanza",
+    image: "/tarot-images/la-templanza.jpg",
+    description: {
+      upright:
+        "El equilibrio, la armonía, la moderación, la paciencia. Encuentras la paz en la moderación, y te adaptas a las circunstancias.",
+      reversed:
+        "El desequilibrio, la impaciencia, la falta de armonía, el exceso. Te excedes en todo, y pierdes el equilibrio.",
+    },
+  },
+  {
+    name: "El Diablo",
+    image: "/tarot-images/el-diablo.jpg",
+    description: {
+      upright:
+        "La atadura, la adicción, la sombra, la esclavitud. Estás atrapado en tus miedos y deseos, y te esclavizas a ellos.",
+      reversed:
+        "La liberación, la ruptura de ataduras, la superación de la sombra, la independencia. Te liberas de tus miedos, y recuperas tu libertad.",
+    },
+  },
+  {
+    name: "La Torre",
+    image: "/tarot-images/la-torre.jpg",
+    description: {
+      upright:
+        "La destrucción, el caos, el cambio repentino, la revelación. La estructura se derrumba, y te enfrentas a una crisis.",
+      reversed:
+        "La resistencia al cambio, el miedo al caos, la evitación de la crisis, la posposición. Te aferras a lo conocido, y evitas el inevitable cambio.",
+    },
+  },
+  {
+    name: "La Estrella",
+    image: "/tarot-images/la-estrella.jpg",
+    description: {
+      upright:
+        "La esperanza, la inspiración, la fe, la curación. La luz de la esperanza te guía, y te conectas con tu propósito.",
+      reversed:
+        "La desesperanza, la falta de inspiración, la duda, la falta de fe. Te alejas de tu propósito, y te pierdes en la oscuridad.",
+    },
+  },
+  {
+    name: "La Luna",
+    image: "/tarot-images/la-luna.jpg",
+    description: {
+      upright:
+        "La intuición, la ilusión, la incertidumbre, el miedo. Te enfrentas a tus miedos y a la oscuridad de tu subconsciente.",
+      reversed:
+        "La claridad, la verdad revelada, la superación del miedo, la liberación de la ilusión. La oscuridad se disipa, y la verdad sale a la luz.",
+    },
+  },
+  {
+    name: "El Sol",
+    image: "/tarot-images/el-sol.jpg",
+    description: {
+      upright: "La alegría, el éxito, la vitalidad, la claridad. La luz del sol te ilumina, y la felicidad te inunda.",
+      reversed:
+        "La tristeza, la falta de alegría, la falta de energía, la confusión. La alegría se desvanece, y la oscuridad te envuelve.",
+    },
+  },
+  {
+    name: "El Juicio",
+    image: "/tarot-images/el-juicio.jpg",
+    description: {
+      upright:
+        "La resurrección, el despertar, la evaluación, el juicio final. Te enfrentas a tus acciones, y te preparas para un nuevo comienzo.",
+      reversed:
+        "La duda, la autocrítica, la falta de perdón, la indecisión. Te juzgas a ti mismo, y te niegas a avanzar.",
+    },
+  },
+  {
+    name: "El Mundo",
+    image: "/tarot-images/el-mundo.jpg",
+    description: {
+      upright: "La realización, la plenitud, la integración, el éxito. Alcanzas tus metas, y te sientes completo.",
+      reversed:
+        "La falta de realización, la incompletitud, la falta de integración, el fracaso. No encuentras la satisfacción, y te sientes incompleto.",
+    },
+  },
+]
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
 
 function ReadingContent() {
+  const [showReading, setShowReading] = useState(false)
+  const [showChat, setShowChat] = useState(false)
+  const [chatMessages, setChatMessages] = useState<Array<{ sender: string; message: string }>>([])
+  const [newMessage, setNewMessage] = useState("")
+  const [question, setQuestion] = useState("")
+  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [clickedCard, setClickedCard] = useState<number | null>(null)
+  const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [shuffledCards, setShuffledCards] = useState<typeof tarotCards>([])
+  const hasInitialized = useRef(false)
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [respuesta, setRespuesta] = useState<string | null>(null)
-  const [cartas, setCartas] = useState<Card[]>([])
 
   useEffect(() => {
-    // Asegurarse de que este código solo se ejecute en el cliente
-    if (typeof window === "undefined") {
-      return
+    const pregunta = searchParams.get("pregunta")
+    if (pregunta && !hasInitialized.current) {
+      hasInitialized.current = true
+      setQuestion(decodeURIComponent(pregunta))
+      setCardOrientations(Array.from({ length: 10 }, () => Math.random() > 0.5))
+      setShuffledCards(shuffleArray(tarotCards).slice(0, 10))
+      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
+      setTimeout(() => {
+        setShowReading(true)
+        setTimeout(() => {
+          setShowChat(true)
+          initializeChat(decodeURIComponent(pregunta))
+        }, 2000)
+      }, 500)
     }
+  }, [searchParams])
 
-    const fetchReading = async () => {
-      const question = searchParams.get("pregunta")
-      const storedCards = localStorage.getItem("tirada_cartas")
+  const initializeChat = async (pregunta: string) => {
+    setIsLoading(true)
+    try {
+      console.log("[v0] Initializing chat with question:", pregunta)
 
-      if (!question || !storedCards) {
-        setError("No se encontró una consulta válida. Por favor, vuelve a empezar.")
-        setIsLoading(false)
-        return
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Hola Madame Elara, mi pregunta es: "${pregunta}". Por favor, interpreta mi tirada de la Cruz Celta.`,
+          question: pregunta,
+          cards: shuffledCards.map((card, index) => ({
+            carta: card.name,
+            posicion: celticCrossPositions[index].name,
+            orientacion: cardOrientations[index] ? "derecha" : "invertida",
+            description: card.description[cardOrientations[index] ? "upright" : "reversed"],
+          })),
+        }),
+      })
+
+      const data = await response.json()
+      console.log("[v0] Chat initialization response:", data)
+
+      if (data.conversationId) {
+        setConversationId(data.conversationId)
       }
 
-      const parsedCards: Card[] = JSON.parse(storedCards)
-      setCartas(parsedCards)
+      setChatMessages([
+        {
+          sender: "Madame Elara",
+          message:
+            data.message || "Bienvenido/a al reino de las cartas. Las energías están alineándose para tu consulta.",
+        },
+      ])
+    } catch (error) {
+      console.error("[v0] Error initializing chat:", error)
+      setChatMessages([
+        {
+          sender: "Madame Elara",
+          message:
+            "Las energías están perturbadas en este momento. Como Madame Elara, te invito a respirar profundamente y reconectar con tu intuición. Las cartas esperan pacientemente tu consulta.",
+        },
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSendMessage = async () => {
+    if (newMessage.trim() && !isLoading) {
+      const userMessage = newMessage
+      setNewMessage("")
+
+      setChatMessages((prev) => [...prev, { sender: "Tú", message: userMessage }])
+
+      setIsLoading(true)
 
       try {
+        console.log("[v0] Sending message:", userMessage)
+
         const response = await fetch("/api/chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
-            message: "Interpreta esta tirada para mi pregunta.",
+            message: userMessage,
+            conversationId: conversationId,
             question: question,
-            cards: parsedCards,
+            cards: shuffledCards.map((card, index) => ({
+              carta: card.name,
+              posicion: celticCrossPositions[index].name,
+              orientacion: cardOrientations[index] ? "derecha" : "invertida",
+            })),
           }),
         })
 
         const data = await response.json()
+        console.log("[v0] Message response:", data)
 
-        if (!response.ok || data.fallback) {
-          throw new Error(data.message || "Un misterioso velo impide ver la respuesta.")
+        if (data.conversationId) {
+          setConversationId(data.conversationId)
         }
 
-        setRespuesta(data.message)
-      } catch (err: any) {
-        setError(err.message)
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            sender: "Madame Elara",
+            message:
+              data.message ||
+              "Las cartas susurran secretos que requieren más claridad. Reformula tu pregunta, querido/a consultante.",
+          },
+        ])
+      } catch (error) {
+        console.error("[v0] Error sending message:", error)
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            sender: "Madame Elara",
+            message:
+              "Siento una interferencia en las energías cósmicas. Las cartas necesitan un momento para realinearse. Por favor, intenta de nuevo.",
+          },
+        ])
       } finally {
         setIsLoading(false)
-        localStorage.removeItem("tirada_cartas") // Limpiar para la próxima consulta
       }
     }
-
-    fetchReading()
-  }, [searchParams]) // La dependencia es correcta, el efecto se ejecutará en el cliente
-
-  if (isLoading) {
-    return (
-      <div className="text-center space-y-4">
-        <Loader2 className="w-12 h-12 mx-auto animate-spin text-primary" />
-        <p className="text-xl text-muted-foreground">Las cartas se están alineando...</p>
-      </div>
-    )
   }
 
-  if (error) {
-    return (
-      <div className="text-center p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-        <p className="text-destructive font-medium">{error}</p>
-      </div>
-    )
+  const handleCardClick = (index: number) => {
+    if (isTouchDevice) {
+      setClickedCard(clickedCard === index ? null : index)
+    }
+  }
+
+  const handleCardHover = (index: number) => {
+    if (!isTouchDevice) {
+      setHoveredCard(index)
+    }
+  }
+
+  const handleCardLeave = () => {
+    if (!isTouchDevice) {
+      setHoveredCard(null)
+    }
   }
 
   return (
-    <div className="space-y-8">
-      {/* Aquí podrías mostrar las cartas si quisieras */}
-      <div className="p-6 bg-card border border-border rounded-lg text-left animate-fade-in">
-        <h3 className="text-2xl font-serif text-primary mb-4 flex items-center">
-          <Sparkles className="w-6 h-6 mr-3" />
-          La Visión de Elara
-        </h3>
-        <p className="text-foreground/90 whitespace-pre-wrap leading-relaxed">{respuesta}</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/")}
+              className="text-foreground hover:text-primary"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Volver
+            </Button>
+            <h1 className="text-2xl font-serif text-primary font-bold">Oráculo de Elara</h1>
+          </div>
+        </div>
+      </header>
+
+      <main className="pt-20">
+        {/* Question Display */}
+        <section className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl font-serif text-primary mb-4">Tu Pregunta</h2>
+            <p className="text-lg text-muted-foreground italic">"{question}"</p>
+          </div>
+        </section>
+
+        {/* Celtic Cross Reading */}
+        {showReading && (
+          <section className="container mx-auto px-4 py-16">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
+
+              <div className="grid grid-cols-4 grid-rows-4 gap-4 md:gap-8 max-w-xl mx-auto relative h-[700px]">
+                {celticCrossPositions.map((positionInfo, index) => {
+                  const isReversed = cardOrientations[index]
+                  const card = shuffledCards[index]
+                  const showTooltip = isTouchDevice ? clickedCard === index : hoveredCard === index
+
+                  if (!card) return null
+
+                  return (
+                    <div key={positionInfo.id} className={`absolute ${positionInfo.position}`}>
+                      <div
+                        className="relative cursor-pointer transition-all duration-300 hover:scale-110 hover:z-20 group"
+                        onMouseEnter={() => handleCardHover(index)}
+                        onMouseLeave={handleCardLeave}
+                        onClick={() => handleCardClick(index)}
+                      >
+                        <div
+                          className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90" : ""}`}
+                        >
+                          <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20" >
+                            <Image
+                              src={card.image || "/placeholder.svg"}
+                              alt={card.name}
+                              width={88}
+                              height={152}
+                              className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-2">
+                          <p className="text-xs text-center text-muted-foreground font-medium">{positionInfo.name}</p>
+                        </div>
+
+                        <div
+                          className={`absolute z-50 bg-card border border-primary/30 rounded-lg p-4 shadow-xl w-72 max-w-[90vw] 
+                          ${index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"} 
+                          transform transition-opacity duration-200 pointer-events-none
+                          ${showTooltip ? "opacity-100" : "opacity-0"}
+                          md:pointer-events-none
+                          `}
+                        >
+                          <h3 className="font-serif text-primary font-semibold mb-1 text-sm">{positionInfo.name}</h3>
+                          <h4 className="font-semibold mb-2 text-sm">
+                            {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
+                          </h4>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {isReversed ? card.description.reversed : card.description.upright}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Chat Section */}
+        {showChat && (
+          <section className="container mx-auto px-4 py-16">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-serif text-center mb-8 text-primary">Interpretación y Consulta</h2>
+
+              <Card className="bg-card border-primary/30">
+                <CardContent className="p-6">
+                  <div className="space-y-6 mb-6 max-h-96 overflow-y-auto">
+                    {chatMessages.map((msg, index) => (
+                      <div key={index} className={`flex ${msg.sender === "Tú" ? "justify-end" : "justify-start"}`}>
+                        <div
+                          className={`max-w-3xl p-4 rounded-lg ${
+                            msg.sender === "Tú" ? "bg-primary text-primary-foreground ml-12" : "bg-muted mr-12"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            {msg.sender === "Madame Elara" && <Moon className="w-4 h-4 text-primary" />}
+                            <p className="font-semibold text-sm">{msg.sender}</p>
+                          </div>
+                          <p className="text-sm leading-relaxed whitespace-pre-line">{msg.message}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="flex justify-start">
+                        <div className="max-w-3xl p-4 rounded-lg bg-muted mr-12">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Moon className="w-4 h-4 text-primary" />
+                            <p className="font-semibold text-sm">Madame Elara</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-primary animate-spin" />
+                            <p className="text-sm text-muted-foreground">Consultando las cartas...</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Input
+                      placeholder="Haz una pregunta de seguimiento..."
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                      className="flex-1 bg-background border-border focus:border-primary"
+                      disabled={isLoading}
+                    />
+                    <Button
+                      onClick={handleSendMessage}
+                      disabled={!newMessage.trim() || isLoading}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                    >
+                      {isLoading ? <Sparkles className="w-4 h-4 animate-spin" /> : "Enviar"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        )}
+      </main>
     </div>
   )
 }
 
-export default function LecturaPage() {
+export default function ReadingPage() {
   return (
-    <main className="min-h-screen bg-background pt-24">
-      <section className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <Suspense fallback={<div>Cargando...</div>}>
-            <ReadingContent />
-          </Suspense>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Sparkles className="w-8 h-8 text-primary animate-spin" />
         </div>
-      </section>
-    </main>
+      }
+    >
+      <ReadingContent />
+    </Suspense>
   )
 }
