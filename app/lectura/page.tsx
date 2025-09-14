@@ -133,7 +133,9 @@ function ReadingContent() {
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [clickedCard, setClickedCard] = useState<number | null>(null)
   const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
   const hasInitialized = useRef(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -144,6 +146,7 @@ function ReadingContent() {
       hasInitialized.current = true
       setQuestion(decodeURIComponent(pregunta))
       setCardOrientations(Array.from({ length: 10 }, () => Math.random() > 0.5))
+      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
       setTimeout(() => {
         setShowReading(true)
         setTimeout(() => {
@@ -256,6 +259,24 @@ function ReadingContent() {
     }
   }
 
+  const handleCardClick = (index: number) => {
+    if (isTouchDevice) {
+      setClickedCard(clickedCard === index ? null : index)
+    }
+  }
+
+  const handleCardHover = (index: number) => {
+    if (!isTouchDevice) {
+      setHoveredCard(index)
+    }
+  }
+
+  const handleCardLeave = () => {
+    if (!isTouchDevice) {
+      setHoveredCard(null)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -295,13 +316,15 @@ function ReadingContent() {
                 {celticCrossPositions.map((positionInfo, index) => {
                   const isReversed = cardOrientations[index]
                   const card = sampleCards[index]
+                  const showTooltip = isTouchDevice ? clickedCard === index : hoveredCard === index
 
                   return (
                     <div key={positionInfo.id} className={`absolute ${positionInfo.position}`}>
                       <div
                         className="relative cursor-pointer transition-all duration-300 hover:scale-110 hover:z-20 group"
-                        onMouseEnter={() => setHoveredCard(index)}
-                        onMouseLeave={() => setHoveredCard(null)}
+                        onMouseEnter={() => handleCardHover(index)}
+                        onMouseLeave={handleCardLeave}
+                        onClick={() => handleCardClick(index)}
                       >
                         <div
                           className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90" : ""}`}
@@ -321,12 +344,19 @@ function ReadingContent() {
                           <p className="text-xs text-center text-muted-foreground font-medium">{positionInfo.name}</p>
                         </div>
 
-                        <div className="absolute z-50 bg-card border border-primary/30 rounded-lg p-3 shadow-xl w-64 -top-4 left-full ml-4 transform opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                          <h3 className="font-serif text-primary font-semibold mb-1">{positionInfo.name}</h3>
-                          <h4 className="font-semibold mb-2">
+                        <div
+                          className={`absolute z-50 bg-card border border-primary/30 rounded-lg p-4 shadow-xl w-72 max-w-[90vw] 
+                          ${index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"} 
+                          transform transition-opacity duration-200 pointer-events-none
+                          ${showTooltip ? "opacity-100" : "opacity-0"}
+                          md:pointer-events-none
+                          `}
+                        >
+                          <h3 className="font-serif text-primary font-semibold mb-1 text-sm">{positionInfo.name}</h3>
+                          <h4 className="font-semibold mb-2 text-sm">
                             {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
                           </h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
+                          <p className="text-xs text-muted-foreground leading-relaxed">
                             {isReversed ? card.description.reversed : card.description.upright}
                           </p>
                         </div>
