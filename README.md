@@ -1,30 +1,44 @@
-# Oráculo Celta landing page
+# Oráculo Celta Landing Page
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+Este es un proyecto de landing page para un oráculo celta.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/oscars-projects-cd22c208/v0-oraculo-celta-landing-page)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/2wfxlybAgz4)
+## Descripción
 
-## Overview
+[Añadir una descripción más detallada del proyecto aquí]
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+## Instalación
 
-## Deployment
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/florinato/v0-oraculo-celta-landing-page.git
+   ```
+2. Navega al directorio del proyecto:
+   ```bash
+   cd v0-oraculo-celta-landing-page
+   ```
+3. Instala las dependencias:
+   ```bash
+   pnpm install
+   ```
 
-Your project is live at:
+## Uso
 
-**[https://vercel.com/oscars-projects-cd22c208/v0-oraculo-celta-landing-page](https://vercel.com/oscars-projects-cd22c208/v0-oraculo-celta-landing-page)**
+Para iniciar el servidor de desarrollo:
 
-## Build your app
+```bash
+pnpm dev
+```
 
-Continue building your app on:
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
-**[https://v0.app/chat/projects/2wfxlybAgz4](https://v0.app/chat/projects/2wfxlybAgz4)**
+## Despliegue
 
-## How It Works
+Este proyecto está configurado para ser desplegado en Vercel.
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## Contribuciones
+
+[Información sobre cómo contribuir]
+
+## Licencia
+
+[Información de licencia]
