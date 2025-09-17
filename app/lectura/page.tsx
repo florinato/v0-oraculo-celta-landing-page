@@ -74,10 +74,25 @@ function ReadingContent() {
     }
   }, [searchParams])
 
+  const handleApiError = (error: any, context: 'initialization' | 'message') => {
+    console.error(`[v0] Error during chat ${context}:`, error);
+    const errorMessage =
+      context === 'initialization'
+        ? "Las energías están perturbadas en este momento. Como Madame Elara, te invito a respirar profundamente y reconectar con tu intuición. Las cartas esperan pacientemente tu consulta."
+        : "Siento una interferencia en las energías cósmicas. Las cartas necesitan un momento para realinearse. Por favor, intenta de nuevo.";
+
+    const messageUpdater = (prev: Array<{ sender: string; message: string }>) => [
+      ...prev,
+      { sender: "Madame Elara", message: errorMessage },
+    ];
+    setChatMessages(messageUpdater);
+  };
+
   const initializeChat = async (pregunta: string, newShuffledCards: (typeof tarotCards), newOrientations: boolean[]) => {
     setIsLoading(true);
     try {
       console.log("[v0] Initializing chat with question:", pregunta);
+      console.log("[v0] initializeChat - hasInitialized.current:", hasInitialized.current);
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -85,7 +100,6 @@ function ReadingContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: `Hola Madame Elara, mi pregunta es: "${pregunta}". Por favor, interpreta mi tirada de la Cruz Celta.`,
           question: pregunta,
           cards: newShuffledCards.map((card, index) => ({
             carta: card.name,
@@ -95,6 +109,11 @@ function ReadingContent() {
           })),
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Error desconocido en la API' }));
+        throw new Error(errorData.message || `Error en la API: ${response.statusText}`);
+      }
 
       const data = await response.json()
       console.log("[v0] Chat initialization response:", data)
@@ -111,14 +130,7 @@ function ReadingContent() {
         },
       ])
     } catch (error) {
-      console.error("[v0] Error initializing chat:", error)
-      setChatMessages([
-        {
-          sender: "Madame Elara",
-          message:
-            "Las energías están perturbadas en este momento. Como Madame Elara, te invito a respirar profundamente y reconectar con tu intuición. Las cartas esperan pacientemente tu consulta.",
-        },
-      ])
+      handleApiError(error, 'initialization');
     } finally {
       setIsLoading(false)
     }
@@ -149,9 +161,15 @@ function ReadingContent() {
               carta: card.name,
               posicion: celticCrossPositions[index].name,
               orientacion: cardOrientations[index] ? "derecha" : "invertida",
+              description: cardOrientations[index] ? card.description.upright : card.description.reversed,
             })),
           }),
         })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: 'Error desconocido en la API' }));
+          throw new Error(errorData.message || `Error en la API: ${response.statusText}`);
+        }
 
         const data = await response.json()
         console.log("[v0] Message response:", data)
@@ -170,15 +188,7 @@ function ReadingContent() {
           },
         ])
       } catch (error) {
-        console.error("[v0] Error sending message:", error)
-        setChatMessages((prev) => [
-          ...prev,
-          {
-            sender: "Madame Elara",
-            message:
-              "Siento una interferencia en las energías cósmicas. Las cartas necesitan un momento para realinearse. Por favor, intenta de nuevo.",
-          },
-        ])
+        handleApiError(error, 'message');
       } finally {
         setIsLoading(false)
       }

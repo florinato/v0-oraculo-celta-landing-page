@@ -4,23 +4,22 @@ interface Card {
   carta: string;
   posicion: string;
   orientacion: string;
-  description: string;
 }
 
 const buildCardsContext = (cards: Card[]): string => {
   return cards
     .map(
       (card) =>
-        `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}). Descripción: ${card.description}`
+        `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}).`
     )
-    .join(". ");
+    .join(" ");
 };
 
 export async function POST(request: NextRequest) {
   try {
     const { message, conversationId, question, cards }: { message: string; conversationId?: string; question: string; cards: Card[] } = await request.json();
-
-    if (!message || !question || !cards || cards.length === 0) {
+    
+    if ((!message && !conversationId) && (!question || !cards || !cards.length)) {
       return NextResponse.json({ error: "Faltan parámetros requeridos: message, question, o cards." }, { status: 400 });
     }
 
@@ -34,12 +33,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Dify API key not configured" }, { status: 500 });
     }
 
+    console.log("[v0] Dify API key configured");
+
     const cardsDescription = buildCardsContext(cards);
-    const context = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cardsDescription}. Responde en español con tono místico pero accesible.`;
+    const initialPrompt = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cardsDescription}. Responde en español con tono místico pero accesible.`;
 
     const requestBody = {
       inputs: {},
-      query: conversationId ? message : context,
+      query: message || initialPrompt,
       response_mode: "blocking",
       user: "tarot-user",
       ...(conversationId && { conversation_id: conversationId }),
@@ -81,7 +82,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("[v0] Error in chat API:", error);
-
     return NextResponse.json({
       message:
         "Las cartas se han nublado momentáneamente. Como Madame Elara, siento que las energías necesitan realinearse. Tu consulta es importante, pero las fuerzas cósmicas requieren un momento de pausa antes de revelar sus secretos.",
