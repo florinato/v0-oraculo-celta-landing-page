@@ -91,7 +91,7 @@ export const tarotCards = [
   },
   {
     name: "El Ermitaño",
-    image: "/tarot-images/el-ermitaño.jpg",
+    image: "/tarot-images/el-ermitano.jpg",
     description: {
       upright:
         "La introspección, la soledad, la búsqueda interior, la sabiduría. Te retiras del mundo para buscar respuestas en tu interior.",
