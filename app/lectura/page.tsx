@@ -12,14 +12,14 @@ import { Suspense, useEffect, useRef, useState } from "react";
 const celticCrossPositions = [
   { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
   { id: 2, name: "2. Lo que lo obstaculiza", position: "col-start-2 row-start-2" },
-  { id: 3, name: "3. Su base o raíz", position: "col-start-2 row-start-3" },
-  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-2" },
+  { id: 3, name: "3. Su base o raíz", position: "col-start-2 row-start-4" },
+  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-3" },
   { id: 5, name: "5. Las posibilidades", position: "col-start-2 row-start-1" },
-  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-2" },
-  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-4" },
-  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-3" },
-  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-2" },
-  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
+  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-3" },
+  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-5" },
+  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-4" },
+  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-3" },
+  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-2" },
 ]
 
 const tarotCards = tarotCardsModule.tarotCards;
@@ -248,7 +248,7 @@ function ReadingContent() {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
 
-              <div className="grid grid-cols-4 grid-rows-4 gap-4 md:gap-8 max-w-xl mx-auto relative h-[700px]">
+              <div className="grid grid-cols-4 grid-rows-5 gap-4 md:gap-8 max-w-xl mx-auto relative h-[700px]">
                 {celticCrossPositions.map((positionInfo, index) => {
                   const isReversed = cardOrientations[index]
                   const card = shuffledCards[index]
@@ -265,7 +265,7 @@ function ReadingContent() {
                         onClick={() => handleCardClick(index)}
                       >
                         <div
-                          className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90" : ""}`}
+                          className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90 transform translate-y-[calc(100%+1rem)]" : ""}`}
                         >
                           <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20" >
                             <Image
@@ -339,7 +339,7 @@ function ReadingContent() {
                             <p className="font-semibold text-sm">Madame Elara</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-primary animate-spin" />
+                            <Sparkles className="w-4 h-4 animate-spin" />
                             <p className="text-sm text-muted-foreground">Consultando las cartas...</p>
                           </div>
                         </div>
