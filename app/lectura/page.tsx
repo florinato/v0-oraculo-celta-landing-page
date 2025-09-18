@@ -11,15 +11,15 @@ import { Suspense, useEffect, useRef, useState } from "react";
 
 const celticCrossPositions = [
   { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
-  { id: 2, name: "2. Lo que lo obstaculiza", position: "col-start-2 row-start-2" },
+  { id: 2, name: "2. Lo que lo obstaculiza", position: "col-start-2 row-start-3" },
   { id: 3, name: "3. Su base o raíz", position: "col-start-2 row-start-4" },
-  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-3" },
+  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-2" },
   { id: 5, name: "5. Las posibilidades", position: "col-start-2 row-start-1" },
-  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-3" },
-  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-5" },
-  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-4" },
-  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-3" },
-  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-2" },
+  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-2" },
+  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-4" },
+  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-3" },
+  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-2" },
+  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
 ]
 
 const tarotCards = tarotCardsModule.tarotCards;
@@ -265,7 +265,7 @@ function ReadingContent() {
                         onClick={() => handleCardClick(index)}
                       >
                         <div
-                          className={`transition-transform duration-500 ${positionInfo.id === 2 ? "rotate-90 transform translate-y-[calc(100%+1rem)]" : ""}`}
+                          className={`transition-transform duration-500`}
                         >
                           <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20" >
                             <Image
@@ -279,12 +279,12 @@ function ReadingContent() {
                         </div>
 
                         <div className="mt-2">
-                          <p className="text-xs text-center text-muted-foreground font-medium">{positionInfo.name}</p>
+                          <p className="text-xs text-center text-muted-foreground font-medium card-position-name">{positionInfo.name}</p>
                         </div>
 
                         <div
-                          className={`absolute z-50 bg-card border border-primary/30 rounded-lg p-4 shadow-xl w-72 max-w-[90vw] 
-                          ${index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"} 
+                          className={`absolute z-50 bg-card border border-primary/30 rounded-lg p-4 shadow-xl w-72 max-w-[90vw]
+                          ${positionInfo.id === 2 ? "top-[calc(100%+1rem)] left-1/2 -translate-x-1/2" : index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"}
                           transform transition-opacity duration-200 pointer-events-none
                           ${showTooltip ? "opacity-100" : "opacity-0"}
                           md:pointer-events-none

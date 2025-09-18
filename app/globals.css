@@ -126,3 +126,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.card-position-name {
+  text-align: center;
+  margin-top: 0.5rem;
+}
