@@ -1,13 +1,14 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import * as tarotCardsModule from "@/lib/tarotCards";
-import { ArrowLeft, Moon, Sparkles } from "lucide-react";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import * as tarotCardsModule from "@/lib/tarotCards"
+import { ArrowLeft, Moon, Sparkles } from "lucide-react"
+import Image from "next/image"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useRef, useState } from "react"
+import ReactMarkdown from "react-markdown"
 
 const celticCrossPositions = [
   { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
@@ -22,7 +23,7 @@ const celticCrossPositions = [
   { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
 ]
 
-const tarotCards = tarotCardsModule.tarotCards;
+const tarotCards = tarotCardsModule.tarotCards
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array]
@@ -55,44 +56,45 @@ function ReadingContent() {
     if (pregunta && !hasInitialized.current) {
       hasInitialized.current = true
       const decodedQuestion = decodeURIComponent(pregunta)
-      const newShuffledCards = shuffleArray(tarotCards).slice(0, 10);
+      const newShuffledCards = shuffleArray(tarotCards).slice(0, 10)
       // Creamos las orientaciones y las guardamos en una variable local
-      const newOrientations = Array.from({ length: 10 }, () => Math.random() > 0.5);
+      const newOrientations = Array.from({ length: 10 }, () => Math.random() > 0.5)
 
-      setQuestion(decodedQuestion);
-      setCardOrientations(newOrientations); // Las guardamos en el estado para la UI
-      setShuffledCards(newShuffledCards);
-      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
+      setQuestion(decodedQuestion)
+      setCardOrientations(newOrientations) // Las guardamos en el estado para la UI
+      setShuffledCards(newShuffledCards)
+      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
 
       setTimeout(() => {
-        setShowReading(true);
+        setShowReading(true)
         setTimeout(() => {
-          setShowChat(true);
-          initializeChat(decodedQuestion, newShuffledCards, newOrientations);
-        }, 2000);
-      }, 500);
+          setShowChat(true)
+          initializeChat(decodedQuestion, newShuffledCards, newOrientations)
+        }, 2000)
+      }, 500)
     }
   }, [searchParams])
 
-  const handleApiError = (error: any, context: 'initialization' | 'message') => {
-    console.error(`[v0] Error during chat ${context}:`, error);
+  const handleApiError = (error: any, context: "initialization" | "message") => {
+    console.error(`[v0] Error during chat ${context}:`, error)
+
     const errorMessage =
-      context === 'initialization'
-        ? "Las energías están perturbadas en este momento. Como Madame Elara, te invito a respirar profundamente y reconectar con tu intuición. Las cartas esperan pacientemente tu consulta."
-        : "Siento una interferencia en las energías cósmicas. Las cartas necesitan un momento para realinearse. Por favor, intenta de nuevo.";
+      context === "initialization"
+        ? "🌙 Las energías están alineándose. El oráculo necesita un momento para conectar con las fuerzas cósmicas. Por favor, intenta de nuevo en unos instantes."
+        : "✨ Siento una interferencia momentánea en las energías. Las cartas necesitan realinearse. Por favor, intenta de nuevo."
 
     const messageUpdater = (prev: Array<{ sender: string; message: string }>) => [
       ...prev,
       { sender: "Madame Elara", message: errorMessage },
-    ];
-    setChatMessages(messageUpdater);
-  };
+    ]
+    setChatMessages(messageUpdater)
+  }
 
-  const initializeChat = async (pregunta: string, newShuffledCards: (typeof tarotCards), newOrientations: boolean[]) => {
-    setIsLoading(true);
+  const initializeChat = async (pregunta: string, newShuffledCards: typeof tarotCards, newOrientations: boolean[]) => {
+    setIsLoading(true)
     try {
-      console.log("[v0] Initializing chat with question:", pregunta);
-      console.log("[v0] initializeChat - hasInitialized.current:", hasInitialized.current);
+      console.log("[v0] Initializing chat with question:", pregunta)
+      console.log("[v0] initializeChat - hasInitialized.current:", hasInitialized.current)
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -108,11 +110,10 @@ function ReadingContent() {
             description: newOrientations[index] ? card.description.upright : card.description.reversed,
           })),
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Error desconocido en la API' }));
-        throw new Error(errorData.message || `Error en la API: ${response.statusText}`);
+        throw new Error(`Error en la API: ${response.statusText}`)
       }
 
       const data = await response.json()
@@ -130,7 +131,7 @@ function ReadingContent() {
         },
       ])
     } catch (error) {
-      handleApiError(error, 'initialization');
+      handleApiError(error, "initialization")
     } finally {
       setIsLoading(false)
     }
@@ -167,8 +168,7 @@ function ReadingContent() {
         })
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ message: 'Error desconocido en la API' }));
-          throw new Error(errorData.message || `Error en la API: ${response.statusText}`);
+          throw new Error(`Error en la API: ${response.statusText}`)
         }
 
         const data = await response.json()
@@ -188,7 +188,7 @@ function ReadingContent() {
           },
         ])
       } catch (error) {
-        handleApiError(error, 'message');
+        handleApiError(error, "message")
       } finally {
         setIsLoading(false)
       }
@@ -264,10 +264,15 @@ function ReadingContent() {
                         onMouseLeave={handleCardLeave}
                         onClick={() => handleCardClick(index)}
                       >
-                        <div
-                          className={`transition-transform duration-500`}
-                        >
-                          <div className="w-22 h-38 rounded-lg overflow-hidden shadow-lg border-2 border-primary/20" >
+                        <div className="transition-transform duration-500">
+                          <div className="relative w-22 h-38 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
+                            {/* Efecto de brillo en hover */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                            {/* Marco interior decorativo */}
+                            <div className="absolute inset-1 border border-primary/20 rounded-lg pointer-events-none" />
+
+                            {/* Imagen de la carta */}
                             <Image
                               src={card.image || "/placeholder.svg"}
                               alt={card.name}
@@ -275,28 +280,40 @@ function ReadingContent() {
                               height={152}
                               className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
                             />
+
+                            {/* Overlay sutil con gradiente */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                           </div>
                         </div>
 
                         <div className="mt-2">
-                          <p className="text-xs text-center text-muted-foreground font-medium card-position-name">{positionInfo.name}</p>
+                          <p className="text-xs text-center text-muted-foreground font-medium card-position-name drop-shadow-sm">
+                            {positionInfo.name}
+                          </p>
                         </div>
 
                         <div
-                          className={`absolute z-50 bg-card border border-primary/30 rounded-lg p-4 shadow-xl w-72 max-w-[90vw]
+                          className={`absolute z-50 bg-card/95 backdrop-blur-md border-2 border-primary/40 rounded-xl p-4 shadow-2xl w-72 max-w-[90vw]
                           ${positionInfo.id === 2 ? "top-[calc(100%+1rem)] left-1/2 -translate-x-1/2" : index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"}
-                          transform transition-opacity duration-200 pointer-events-none
-                          ${showTooltip ? "opacity-100" : "opacity-0"}
+                          transform transition-all duration-200 pointer-events-none
+                          ${showTooltip ? "opacity-100 scale-100" : "opacity-0 scale-95"}
                           md:pointer-events-none
+                          before:absolute before:w-3 before:h-3 before:bg-card before:border-l-2 before:border-t-2 before:border-primary/40 before:rotate-45
+                          ${positionInfo.id === 2 ? "before:-top-1.5 before:left-1/2 before:-translate-x-1/2" : index < 5 ? "before:left-0 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2" : "before:right-0 before:top-1/2 before:-translate-y-1/2 before:translate-x-1/2"}
                           `}
                         >
-                          <h3 className="font-serif text-primary font-semibold mb-1 text-sm">{positionInfo.name}</h3>
-                          <h4 className="font-semibold mb-2 text-sm">
-                            {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
-                          </h4>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            {isReversed ? card.description.reversed : card.description.upright}
-                          </p>
+                          <div className="relative z-10">
+                            <h3 className="font-serif text-primary font-semibold mb-1 text-sm flex items-center gap-2">
+                              <Sparkles className="w-3 h-3" />
+                              {positionInfo.name}
+                            </h3>
+                            <h4 className="font-semibold mb-2 text-sm text-foreground">
+                              {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
+                            </h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              {isReversed ? card.description.reversed : card.description.upright}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -327,7 +344,9 @@ function ReadingContent() {
                             {msg.sender === "Madame Elara" && <Moon className="w-4 h-4 text-primary" />}
                             <p className="font-semibold text-sm">{msg.sender}</p>
                           </div>
-                          <p className="text-sm leading-relaxed whitespace-pre-line">{msg.message}</p>
+                          <div className="text-sm leading-relaxed prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-ul:my-2 prose-li:my-1">
+                            <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          </div>
                         </div>
                       </div>
                     ))}

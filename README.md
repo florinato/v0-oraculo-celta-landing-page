@@ -9,25 +9,25 @@ Este es un proyecto de landing page para un oráculo celta.
 ## Instalación
 
 1. Clona el repositorio:
-   ```bash
+   \`\`\`bash
    git clone https://github.com/florinato/v0-oraculo-celta-landing-page.git
-   ```
+   \`\`\`
 2. Navega al directorio del proyecto:
-   ```bash
+   \`\`\`bash
    cd v0-oraculo-celta-landing-page
-   ```
+   \`\`\`
 3. Instala las dependencias:
-   ```bash
+   \`\`\`bash
    pnpm install
-   ```
+   \`\`\`
 
 ## Uso
 
 Para iniciar el servidor de desarrollo:
 
-```bash
+\`\`\`bash
 pnpm dev
-```
+\`\`\`
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
