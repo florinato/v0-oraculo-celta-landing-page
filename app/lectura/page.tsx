@@ -9,6 +9,8 @@ import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
+import { ProtectedRoute } from "@/components/protected-route"
+import { AdsBanner } from "@/components/ads-banner"
 
 const celticCrossPositions = [
   { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
@@ -47,6 +49,7 @@ function ReadingContent() {
   const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const [shuffledCards, setShuffledCards] = useState<typeof tarotCards>([])
+  const [isGenerating, setIsGenerating] = useState(false)
   const hasInitialized = useRef(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -57,11 +60,10 @@ function ReadingContent() {
       hasInitialized.current = true
       const decodedQuestion = decodeURIComponent(pregunta)
       const newShuffledCards = shuffleArray(tarotCards).slice(0, 10)
-      // Creamos las orientaciones y las guardamos en una variable local
       const newOrientations = Array.from({ length: 10 }, () => Math.random() > 0.5)
 
       setQuestion(decodedQuestion)
-      setCardOrientations(newOrientations) // Las guardamos en el estado para la UI
+      setCardOrientations(newOrientations)
       setShuffledCards(newShuffledCards)
       setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
 
@@ -92,9 +94,9 @@ function ReadingContent() {
 
   const initializeChat = async (pregunta: string, newShuffledCards: typeof tarotCards, newOrientations: boolean[]) => {
     setIsLoading(true)
+    setIsGenerating(true)
     try {
       console.log("[v0] Initializing chat with question:", pregunta)
-      console.log("[v0] initializeChat - hasInitialized.current:", hasInitialized.current)
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -134,6 +136,7 @@ function ReadingContent() {
       handleApiError(error, "initialization")
     } finally {
       setIsLoading(false)
+      setIsGenerating(false)
     }
   }
 
@@ -330,6 +333,9 @@ function ReadingContent() {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-serif text-center mb-8 text-primary">Interpretación y Consulta</h2>
 
+              {/* Ads Banner during generation */}
+              {isGenerating && <AdsBanner />}
+
               <Card className="bg-card border-primary/30">
                 <CardContent className="p-6">
                   <div className="space-y-6 mb-6 max-h-96 overflow-y-auto">
@@ -395,14 +401,16 @@ function ReadingContent() {
 
 export default function ReadingPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Sparkles className="w-8 h-8 text-primary animate-spin" />
-        </div>
-      }
-    >
-      <ReadingContent />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-background flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-primary animate-spin" />
+          </div>
+        }
+      >
+        <ReadingContent />
+      </Suspense>
+    </ProtectedRoute>
   )
 }

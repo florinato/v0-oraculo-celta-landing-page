@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Sparkles, Star, Moon } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { AuthButton } from "@/components/auth-button"
 
 export default function OracleHomePage() {
   const [question, setQuestion] = useState("")
@@ -23,13 +24,14 @@ export default function OracleHomePage() {
       <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-serif text-primary font-bold">Oráculo de Elara</h1>
-          <nav className="flex gap-6">
+          <nav className="flex gap-6 items-center">
             <a href="#" className="text-foreground hover:text-primary transition-colors">
               Sobre el Oráculo
             </a>
             <a href="#" className="text-foreground hover:text-primary transition-colors">
               Privacidad
             </a>
+            <AuthButton />
           </nav>
         </div>
       </header>
