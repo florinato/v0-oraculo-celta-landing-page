@@ -23,7 +23,10 @@ export default function OracleHomePage() {
       <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-serif text-primary font-bold">Oráculo de Elara</h1>
-          <nav className="flex gap-6">
+          <nav className="flex gap-6 items-center">
+            <a href="/blog" className="text-foreground hover:text-primary transition-colors">
+              Blog
+            </a>
             <a href="#" className="text-foreground hover:text-primary transition-colors">
               Sobre el Oráculo
             </a>

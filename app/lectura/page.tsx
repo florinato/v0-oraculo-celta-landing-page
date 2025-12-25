@@ -47,6 +47,7 @@ function ReadingContent() {
   const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const [shuffledCards, setShuffledCards] = useState<typeof tarotCards>([])
+  const [isGenerating, setIsGenerating] = useState(false)
   const hasInitialized = useRef(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -57,11 +58,10 @@ function ReadingContent() {
       hasInitialized.current = true
       const decodedQuestion = decodeURIComponent(pregunta)
       const newShuffledCards = shuffleArray(tarotCards).slice(0, 10)
-      // Creamos las orientaciones y las guardamos en una variable local
       const newOrientations = Array.from({ length: 10 }, () => Math.random() > 0.5)
 
       setQuestion(decodedQuestion)
-      setCardOrientations(newOrientations) // Las guardamos en el estado para la UI
+      setCardOrientations(newOrientations)
       setShuffledCards(newShuffledCards)
       setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
 
@@ -92,9 +92,9 @@ function ReadingContent() {
 
   const initializeChat = async (pregunta: string, newShuffledCards: typeof tarotCards, newOrientations: boolean[]) => {
     setIsLoading(true)
+    setIsGenerating(true)
     try {
       console.log("[v0] Initializing chat with question:", pregunta)
-      console.log("[v0] initializeChat - hasInitialized.current:", hasInitialized.current)
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -134,6 +134,7 @@ function ReadingContent() {
       handleApiError(error, "initialization")
     } finally {
       setIsLoading(false)
+      setIsGenerating(false)
     }
   }
 
