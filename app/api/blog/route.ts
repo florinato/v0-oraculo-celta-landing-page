@@ -7,25 +7,33 @@ function validateApiKey(request: NextRequest): boolean {
   const authHeader = request.headers.get("Authorization")
   const expectedToken = process.env.BLOG_API_SECRET
 
-  console.log("[v0] Auth validation check:")
-  console.log("[v0] - BLOG_API_SECRET is set:", !!expectedToken)
-  console.log("[v0] - Auth header present:", !!authHeader)
-  console.log("[v0] - Auth header format:", authHeader?.substring(0, 20) + "...")
+  console.log("[v0] ========== AUTH VALIDATION ==========")
+  console.log("[v0] BLOG_API_SECRET exists:", !!expectedToken)
+  console.log("[v0] BLOG_API_SECRET value:", expectedToken ? `${expectedToken.substring(0, 10)}...` : "NOT SET")
+  console.log("[v0] Auth header exists:", !!authHeader)
+  console.log("[v0] Auth header value:", authHeader || "NOT SET")
 
   if (!expectedToken) {
-    console.error("[v0] BLOG_API_SECRET environment variable is not set")
+    console.error("[v0] ERROR: BLOG_API_SECRET environment variable is not set")
     return false
   }
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    console.error("[v0] Invalid or missing Authorization header")
+    console.error("[v0] ERROR: Invalid or missing Authorization header")
+    console.error("[v0] Expected format: 'Bearer <token>'")
     return false
   }
 
   const token = authHeader.substring(7) // Remove "Bearer " prefix
+
+  console.log("[v0] Token received (first 20 chars):", token.substring(0, 20))
+  console.log("[v0] Token expected (first 20 chars):", expectedToken.substring(0, 20))
+  console.log("[v0] Token lengths - received:", token.length, "expected:", expectedToken.length)
+
   const isValid = token === expectedToken
 
   console.log("[v0] Token validation result:", isValid)
+  console.log("[v0] ======================================")
 
   return isValid
 }
