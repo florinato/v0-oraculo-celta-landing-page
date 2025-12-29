@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Sparkles, Star, Moon } from "lucide-react"
+import { Sparkles, Star, Moon, Shield } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export default function OracleHomePage() {
@@ -73,14 +73,23 @@ export default function OracleHomePage() {
                 disabled={!question.trim()}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                Consultar al Oráculo
+                Consulta Gratis al Oráculo
               </Button>
 
-              <div className="mt-8 p-4 bg-muted/50 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground text-center">
-                  🔒 <strong>Privacidad garantizada:</strong> No recopilamos ni almacenamos ningún dato de tu
-                  conversación. Todas las consultas son completamente privadas y confidenciales.
-                </p>
+              <div className="mt-10 p-6 bg-amber-50/5 rounded-lg border-l-4 border-amber-200/60">
+                <div className="flex items-start gap-4">
+                  <Shield className="w-5 h-5 text-amber-200/80 mt-0.5 flex-shrink-0" />
+                  <div className="text-left space-y-2">
+                    <p className="text-base text-amber-200/90 tracking-wide">
+                      consulta anónima ◆ lecturas gratis ◆ sin necesidad de registro
+                    </p>
+                    <p className="text-sm text-stone-300 font-serif italic leading-relaxed">
+                      <span className="font-semibold text-amber-200/90">Privacidad garantizada:</span> No recopilamos ni
+                      almacenamos ningún dato de tu conversación. Todas las consultas son completamente privadas y
+                      confidenciales.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

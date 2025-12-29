@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import * as tarotCardsModule from "@/lib/tarotCards"
-import { ArrowLeft, Moon, Sparkles } from "lucide-react"
+import { ArrowLeft, Moon, Sparkles, Shield } from "lucide-react"
 import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useRef, useState } from "react"
@@ -386,6 +386,22 @@ function ReadingContent() {
                   </div>
                 </CardContent>
               </Card>
+
+              <div className="mt-8 p-5 bg-amber-50/5 rounded-lg border-l-4 border-amber-200/60">
+                <div className="flex items-start gap-4">
+                  <Shield className="w-5 h-5 text-amber-200/80 mt-0.5 flex-shrink-0" />
+                  <div className="text-left space-y-2">
+                    <p className="text-base text-amber-200/90 tracking-wide">
+                      consulta anónima ◆ lecturas gratis ◆ sin necesidad de registro
+                    </p>
+                    <p className="text-sm text-stone-300 font-serif italic leading-relaxed">
+                      <span className="font-semibold text-amber-200/90">Privacidad garantizada:</span> No recopilamos ni
+                      almacenamos ningún dato de tu conversación. Todas las consultas son completamente privadas y
+                      confidenciales.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         )}

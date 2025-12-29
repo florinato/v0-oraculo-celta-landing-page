@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Tag, Sparkles } from "lucide-react"
+import { ArrowLeft, Calendar, Tag } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import type { BlogPost } from "@/lib/blog-storage"
@@ -54,7 +54,7 @@ export default function BlogPage() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <div className="flex justify-center mb-6">
-                <Sparkles className="w-12 h-12 text-primary animate-pulse" />
+                <Calendar className="w-12 h-12 text-primary animate-pulse" />
               </div>
               <h2 className="text-4xl md:text-5xl font-serif text-balance mb-4 text-primary">Sabiduría Ancestral</h2>
               <p className="text-lg text-muted-foreground text-pretty">
@@ -95,6 +95,7 @@ export default function BlogPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                       </div>
                     )}
+                    {!post.imageUrl && <div className="px-6 pt-4"></div>}
                     <CardHeader className="space-y-3">
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
