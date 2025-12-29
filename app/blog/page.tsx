@@ -78,7 +78,7 @@ export default function BlogPage() {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map((post) => (
                   <Card
-                    key={post.id}
+                    key={post.slug || post.id}
                     className="bg-card border-2 border-primary/20 hover:border-primary/40 
                              hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 
                              cursor-pointer group overflow-hidden"
