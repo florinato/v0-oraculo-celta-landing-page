@@ -48,18 +48,31 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    const filename = `${BLOG_PREFIX}${slug}.json`
-    const { blobs } = await list({ prefix: filename })
+    const decodedSlug = decodeURIComponent(slug)
 
-    if (blobs.length === 0) {
+    const { blobs } = await list({ prefix: BLOG_PREFIX })
+
+    // Buscar el blob que coincida con el slug
+    const matchingBlob = blobs.find((blob) => {
+      const blobSlug = blob.pathname.replace(BLOG_PREFIX, "").replace(".json", "")
+      // Comparar con el slug decodificado
+      return blobSlug === decodedSlug
+    })
+
+    if (!matchingBlob) {
+      console.log("[v0] No se encontró blob para slug:", decodedSlug)
+      console.log(
+        "[v0] Blobs disponibles:",
+        blobs.map((b) => b.pathname),
+      )
       return null
     }
 
-    const response = await fetch(blobs[0].url)
+    const response = await fetch(matchingBlob.url)
     const post: BlogPost = await response.json()
     return post
   } catch (error) {
-    console.error("Error fetching blog post:", error)
+    console.error("[v0] Error fetching blog post:", error)
     return null
   }
 }
