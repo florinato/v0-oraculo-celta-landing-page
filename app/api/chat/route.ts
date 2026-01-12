@@ -26,12 +26,21 @@ export async function POST(request: NextRequest) {
     console.log("[v0] Chat API called with:", { message, conversationId, question: question, cardCount: cards.length })
 
     const difyApiKey = process.env.DIFY_API_KEY
-    const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
+    let difyApiUrl = process.env.DIFY_API_URL
 
     console.log("[v0] DIFY_API_KEY is set:", !!difyApiKey)
-    console.log("[v0] DIFY_API_URL from env:", process.env.DIFY_API_URL)
+    console.log("[v0] DIFY_API_URL from env:", difyApiUrl)
+
+    if (difyApiUrl && difyApiUrl.startsWith("app-")) {
+      // If it's a Dify app ID, construct the web API URL
+      difyApiUrl = `https://api.dify.ai/v1/workflows/${difyApiUrl}`
+      console.log("[v0] Detected Dify app ID, using workflow URL:", difyApiUrl)
+    } else if (!difyApiUrl) {
+      difyApiUrl = "https://api.dify.ai/v1"
+      console.log("[v0] No DIFY_API_URL set, using default:", difyApiUrl)
+    }
+
     console.log("[v0] Using Dify API URL:", difyApiUrl)
-    console.log("[v0] Full endpoint will be:", `${difyApiUrl}/chat-messages`)
 
     if (!difyApiKey) {
       console.log("[v0] Dify API key not configured")
