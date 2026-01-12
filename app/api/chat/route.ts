@@ -4,10 +4,13 @@ interface Card {
   carta: string
   posicion: string
   orientacion: string
+  description?: string
 }
 
 const buildCardsContext = (cards: Card[]): string => {
-  return cards.map((card) => `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}).`).join(" ")
+  return cards
+    .map((card) => `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}). ${card.description || ""}`)
+    .join(" ")
 }
 
 export async function POST(request: NextRequest) {
@@ -23,31 +26,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Faltan parámetros requeridos: message, question, o cards." }, { status: 400 })
     }
 
-    console.log("[v0] Chat API called with:", { message, conversationId, question: question, cardCount: cards.length })
+    console.log("[v0] Chat API called with:", { message, conversationId, question, cardCount: cards.length })
 
     const difyApiKey = process.env.DIFY_API_KEY
-    let difyApiUrl = process.env.DIFY_API_URL
-
-    console.log("[v0] DIFY_API_KEY is set:", !!difyApiKey)
-    console.log("[v0] DIFY_API_URL from env:", difyApiUrl)
-
-    if (difyApiUrl && difyApiUrl.startsWith("app-")) {
-      // If it's a Dify app ID, construct the web API URL
-      difyApiUrl = `https://api.dify.ai/v1/workflows/${difyApiUrl}`
-      console.log("[v0] Detected Dify app ID, using workflow URL:", difyApiUrl)
-    } else if (!difyApiUrl) {
-      difyApiUrl = "https://api.dify.ai/v1"
-      console.log("[v0] No DIFY_API_URL set, using default:", difyApiUrl)
-    }
+    const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
 
     console.log("[v0] Using Dify API URL:", difyApiUrl)
+    console.log("[v0] DIFY_API_KEY is set:", !!difyApiKey)
 
     if (!difyApiKey) {
       console.log("[v0] Dify API key not configured")
       return NextResponse.json({ error: "Dify API key not configured" }, { status: 500 })
     }
-
-    console.log("[v0] Dify API key configured")
 
     const cardsDescription = buildCardsContext(cards)
     const initialPrompt = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cardsDescription}. Responde en español con tono místico pero accesible.`
@@ -60,9 +50,12 @@ export async function POST(request: NextRequest) {
       ...(conversationId && { conversation_id: conversationId }),
     }
 
-    console.log("[v0] Sending request to Dify:", JSON.stringify(requestBody, null, 2))
+    console.log("[v0] Sending request to Dify API")
 
-    const response = await fetch(`${difyApiUrl}/chat-messages`, {
+    const fullUrl = `${difyApiUrl}/chat-messages`
+    console.log("[v0] Full API URL:", fullUrl)
+
+    const response = await fetch(fullUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${difyApiKey}`,
@@ -77,7 +70,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.log("[v0] Dify error response:", errorText)
+      console.log("[v0] Dify error response:", errorText.substring(0, 500))
 
       return NextResponse.json({
         message:
@@ -94,12 +87,11 @@ export async function POST(request: NextRequest) {
         message:
           "Las energías están alineándose... Madame Elara necesita ajustar su conexión con el cosmos. Verifica que el endpoint de la API de Dify sea correcto y que la clave de API tenga los permisos adecuados.",
         fallback: true,
-        error: "Invalid response format from Dify API",
       })
     }
 
     const data = await response.json()
-    console.log("[v0] Dify success response:", data)
+    console.log("[v0] Dify response received successfully")
 
     return NextResponse.json({
       message: data.answer,
