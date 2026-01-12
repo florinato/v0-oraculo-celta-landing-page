@@ -28,6 +28,11 @@ export async function POST(request: NextRequest) {
     const difyApiKey = process.env.DIFY_API_KEY
     const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
 
+    console.log("[v0] DIFY_API_KEY is set:", !!difyApiKey)
+    console.log("[v0] DIFY_API_URL from env:", process.env.DIFY_API_URL)
+    console.log("[v0] Using Dify API URL:", difyApiUrl)
+    console.log("[v0] Full endpoint will be:", `${difyApiUrl}/chat-messages`)
+
     if (!difyApiKey) {
       console.log("[v0] Dify API key not configured")
       return NextResponse.json({ error: "Dify API key not configured" }, { status: 500 })
