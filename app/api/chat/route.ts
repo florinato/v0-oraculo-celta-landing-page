@@ -58,6 +58,8 @@ export async function POST(request: NextRequest) {
     })
 
     console.log("[v0] Dify response status:", response.status)
+    const contentType = response.headers.get("content-type")
+    console.log("[v0] Dify response content-type:", contentType)
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -67,6 +69,18 @@ export async function POST(request: NextRequest) {
         message:
           "Disculpa, las energías cósmicas están perturbadas en este momento. Como Madame Elara, puedo decirte que las cartas sugieren paciencia y reflexión.",
         fallback: true,
+      })
+    }
+
+    if (!contentType || !contentType.includes("application/json")) {
+      const responseText = await response.text()
+      console.log("[v0] Dify returned non-JSON response:", responseText.substring(0, 500))
+
+      return NextResponse.json({
+        message:
+          "Las energías están alineándose... Madame Elara necesita ajustar su conexión con el cosmos. Verifica que el endpoint de la API de Dify sea correcto y que la clave de API tenga los permisos adecuados.",
+        fallback: true,
+        error: "Invalid response format from Dify API",
       })
     }
 
