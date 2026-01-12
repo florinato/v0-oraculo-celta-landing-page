@@ -267,23 +267,26 @@ function ReadingContent() {
                       >
                         <div className="transition-transform duration-500">
                           <div className="relative w-22 h-38 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
-                            {/* Efecto de brillo en hover */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            {/* Efecto de brillo superior en hover */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/15 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                            {/* Marco interior decorativo */}
-                            <div className="absolute inset-1 border border-primary/20 rounded-lg pointer-events-none" />
+                            {/* Marco decorativo interior dorado */}
+                            <div className="absolute inset-2 border border-amber-200/40 rounded-lg pointer-events-none" />
 
-                            {/* Imagen de la carta */}
+                            {/* Imagen de la carta con efecto suave */}
                             <Image
                               src={card.image || "/placeholder.svg"}
                               alt={card.name}
                               width={88}
                               height={152}
-                              className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
+                              className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isReversed ? "rotate-180" : ""}`}
                             />
 
-                            {/* Overlay sutil con gradiente */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                            {/* Overlay sutil con gradiente más refinado */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent pointer-events-none" />
+
+                            {/* Destello sutil en esquina */}
+                            <div className="absolute top-1 right-1 w-8 h-8 bg-gradient-to-br from-white/30 to-transparent rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300 pointer-events-none" />
                           </div>
                         </div>
 
@@ -294,24 +297,27 @@ function ReadingContent() {
                         </div>
 
                         <div
-                          className={`absolute z-50 bg-card/95 backdrop-blur-md border-2 border-primary/40 rounded-xl p-4 shadow-2xl w-72 max-w-[90vw]
+                          className={`absolute z-50 bg-card/95 backdrop-blur-md border-2 border-amber-200/50 rounded-xl p-4 shadow-2xl w-72 max-w-[90vw]
                           ${positionInfo.id === 2 ? "top-[calc(100%+1rem)] left-1/2 -translate-x-1/2" : index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"}
                           transform transition-all duration-200 pointer-events-none
                           ${showTooltip ? "opacity-100 scale-100" : "opacity-0 scale-95"}
                           md:pointer-events-none
-                          before:absolute before:w-3 before:h-3 before:bg-card before:border-l-2 before:border-t-2 before:border-primary/40 before:rotate-45
+                          before:absolute before:w-3 before:h-3 before:bg-card before:border-l-2 before:border-t-2 before:border-amber-200/50 before:rotate-45
                           ${positionInfo.id === 2 ? "before:-top-1.5 before:left-1/2 before:-translate-x-1/2" : index < 5 ? "before:left-0 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2" : "before:right-0 before:top-1/2 before:-translate-y-1/2 before:translate-x-1/2"}
                           `}
                         >
                           <div className="relative z-10">
-                            <h3 className="font-serif text-primary font-semibold mb-1 text-sm flex items-center gap-2">
+                            <h3 className="font-serif text-amber-200 font-semibold mb-1 text-sm flex items-center gap-2">
                               <Sparkles className="w-3 h-3" />
                               {positionInfo.name}
                             </h3>
-                            <h4 className="font-semibold mb-2 text-sm text-foreground">
-                              {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
+                            <h4 className="font-serif font-bold mb-2 text-base text-primary tracking-wide">
+                              {card.name}
                             </h4>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
+                            <p className="text-xs text-amber-200/80 mb-2 font-semibold">
+                              {isReversed ? "🔄 Invertida" : "✨ Derecha"}
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed italic">
                               {isReversed ? card.description.reversed : card.description.upright}
                             </p>
                           </div>
@@ -333,7 +339,7 @@ function ReadingContent() {
 
               <Card className="bg-card border-primary/30">
                 <CardContent className="p-6">
-                  <div className="space-y-6 mb-6 max-h-96 overflow-y-auto">
+                  <div className="space-y-6 mb-6">
                     {chatMessages.map((msg, index) => (
                       <div key={index} className={`flex ${msg.sender === "Tú" ? "justify-end" : "justify-start"}`}>
                         <div
