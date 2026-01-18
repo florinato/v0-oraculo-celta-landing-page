@@ -8,16 +8,7 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
-  },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/tarot-images-bis/:path*',
-          destination: '/tarot images-bis/:path*',
-        },
-      ],
-    }
+    domains: ['localhost', process.env.VERCEL_URL || 'localhost'].filter(Boolean),
   },
 }
 
