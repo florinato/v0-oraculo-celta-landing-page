@@ -317,6 +317,7 @@ function ReadingContent() {
                               width={88}
                               height={152}
                               className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
+                              onError={() => console.log("[v0] Image failed to load:", card.image, "Card:", card.name)}
                             />
 
                             {/* Overlay sutil con gradiente */}

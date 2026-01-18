@@ -9,6 +9,16 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/tarot-images-bis/:path*',
+          destination: '/tarot images-bis/:path*',
+        },
+      ],
+    }
+  },
 }
 
 export default nextConfig
