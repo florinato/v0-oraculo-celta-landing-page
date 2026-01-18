@@ -26,7 +26,14 @@ export async function POST(request: NextRequest) {
     console.log("[v0] Chat API called with:", { message, conversationId, question: question, cardCount: cards.length })
 
     const difyApiKey = process.env.DIFY_API_KEY
-    const difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
+    let difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
+
+    if (difyApiUrl && !difyApiUrl.startsWith("http")) {
+      difyApiUrl = "https://api.dify.ai/v1"
+    }
+
+    console.log("[v0] Dify URL being used:", difyApiUrl)
+    console.log("[v0] Dify API key configured:", !!difyApiKey)
 
     if (!difyApiKey) {
       console.log("[v0] Dify API key not configured")
@@ -59,9 +66,14 @@ export async function POST(request: NextRequest) {
 
     console.log("[v0] Dify response status:", response.status)
 
-    if (!response.ok) {
+    const contentType = response.headers.get("content-type") || ""
+    const isJson = contentType.includes("application/json")
+
+    if (!isJson || !response.ok) {
       const errorText = await response.text()
-      console.log("[v0] Dify error response:", errorText)
+      console.log("[v0] Dify non-JSON or error response:", errorText.substring(0, 200))
+      console.log("[v0] Response content-type:", contentType)
+      console.log("[v0] Full Dify URL attempted:", `${difyApiUrl}/chat-messages`)
 
       return NextResponse.json({
         message:

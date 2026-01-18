@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import type { BlogPost } from "@/lib/blog-storage"
+import { addBacklinksToContent } from "@/lib/add-blog-backlinks"
 
 interface BlogPostClientProps {
   slug: string
@@ -52,6 +53,8 @@ export default function BlogPostClient({ slug }: BlogPostClientProps) {
       </div>
     )
   }
+
+  const processedContent = post ? addBacklinksToContent(post.content) : ""
 
   return (
     <div className="min-h-screen bg-background">
@@ -109,7 +112,7 @@ export default function BlogPostClient({ slug }: BlogPostClientProps) {
                          prose-a:text-primary hover:prose-a:text-primary/80
                          prose-p:text-foreground prose-li:text-foreground
                          prose-strong:text-primary prose-em:text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: processedContent }}
             />
           </div>
         </article>

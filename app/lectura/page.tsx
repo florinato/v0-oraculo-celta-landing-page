@@ -34,6 +34,12 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled
 }
 
+const characterBackgrounds: Record<string, string> = {
+  aislinn: "/images/aislinn-scene.jpg",
+  morvan: "/images/morvan-scene.jpg",
+  sybil: "/images/sybil-scene.jpg",
+}
+
 function ReadingContent() {
   const [showReading, setShowReading] = useState(false)
   const [showChat, setShowChat] = useState(false)
@@ -48,12 +54,14 @@ function ReadingContent() {
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const [shuffledCards, setShuffledCards] = useState<typeof tarotCards>([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const hasInitialized = useRef(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const pregunta = searchParams.get("pregunta")
+    const personaje = searchParams.get("personaje")
     if (pregunta && !hasInitialized.current) {
       hasInitialized.current = true
       const decodedQuestion = decodeURIComponent(pregunta)
@@ -61,6 +69,7 @@ function ReadingContent() {
       const newOrientations = Array.from({ length: 10 }, () => Math.random() > 0.5)
 
       setQuestion(decodedQuestion)
+      setSelectedCharacter(personaje)
       setCardOrientations(newOrientations)
       setShuffledCards(newShuffledCards)
       setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
@@ -214,8 +223,23 @@ function ReadingContent() {
     }
   }
 
+  const backgroundImage = selectedCharacter ? characterBackgrounds[selectedCharacter] : null
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Character Background with low opacity */}
+      {backgroundImage && (
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <Image
+            src={backgroundImage || "/placeholder.svg"}
+            alt=""
+            fill
+            className="object-cover opacity-20"
+            priority
+          />
+        </div>
+      )}
+
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -327,18 +351,20 @@ function ReadingContent() {
 
         {/* Chat Section */}
         {showChat && (
-          <section className="container mx-auto px-4 py-16">
-            <div className="max-w-4xl mx-auto">
+          <section className="container mx-auto px-0 md:px-4 py-16">
+            <div className="max-w-4xl mx-auto px-2 md:px-0">
               <h2 className="text-3xl font-serif text-center mb-8 text-primary">Interpretación y Consulta</h2>
 
-              <Card className="bg-card border-primary/30">
-                <CardContent className="p-6">
-                  <div className="space-y-6 mb-6 max-h-96 overflow-y-auto">
+              <Card className="bg-card/95 backdrop-blur-sm border-primary/30">
+                <CardContent className="p-0 md:p-6">
+                  <div className="space-y-6 mb-6 px-2 md:px-0">
                     {chatMessages.map((msg, index) => (
                       <div key={index} className={`flex ${msg.sender === "Tú" ? "justify-end" : "justify-start"}`}>
                         <div
                           className={`max-w-3xl p-4 rounded-lg ${
-                            msg.sender === "Tú" ? "bg-primary text-primary-foreground ml-12" : "bg-muted mr-12"
+                            msg.sender === "Tú"
+                              ? "bg-primary text-primary-foreground ml-2 md:ml-12"
+                              : "bg-muted mr-2 md:mr-12"
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-2">
@@ -353,7 +379,7 @@ function ReadingContent() {
                     ))}
                     {isLoading && (
                       <div className="flex justify-start">
-                        <div className="max-w-3xl p-4 rounded-lg bg-muted mr-12">
+                        <div className="max-w-3xl p-4 rounded-lg bg-muted mr-2 md:mr-12">
                           <div className="flex items-center gap-2 mb-2">
                             <Moon className="w-4 h-4 text-primary" />
                             <p className="font-semibold text-sm">Madame Elara</p>
@@ -367,7 +393,7 @@ function ReadingContent() {
                     )}
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-1 md:gap-3 px-2 md:px-0">
                     <Input
                       placeholder="Haz una pregunta de seguimiento..."
                       value={newMessage}
