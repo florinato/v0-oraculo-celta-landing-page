@@ -2,6 +2,7 @@
 
 import { OracleProvider } from "@/lib/oracle-context"
 import { OracleCharacterSelector } from "@/components/oracle-character-selector"
+import { FeaturedBlogPosts } from "@/components/featured-blog-posts"
 import { Sparkles, Star, Moon, Shield } from "lucide-react"
 
 export default function OracleHomePage() {
@@ -84,6 +85,9 @@ export default function OracleHomePage() {
                 </div>
               </div>
             </section>
+
+            {/* Featured Blog Posts */}
+            <FeaturedBlogPosts />
           </main>
         </div>
       </div>

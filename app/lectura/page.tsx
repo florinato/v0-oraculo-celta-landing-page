@@ -1,11 +1,14 @@
 "use client"
 
+import React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import * as tarotCardsModule from "@/lib/tarotCards"
-import { ArrowLeft, Moon, Sparkles, Shield } from "lucide-react"
+import { ArrowLeft, Moon, Sparkles, Shield, Heart, Briefcase, Search, Home } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
@@ -38,6 +41,16 @@ const characterBackgrounds: Record<string, string> = {
   aislinn: "/images/aislinn-scene.jpg",
   morvan: "/images/morvan-scene.jpg",
   sybil: "/images/sybil-scene.jpg",
+}
+
+// Custom markdown components for styling
+const markdownComponents = {
+  strong: ({ children }: { children: React.ReactNode }) => (
+    <span className="font-semibold text-primary">{children}</span>
+  ),
+  b: ({ children }: { children: React.ReactNode }) => (
+    <span className="font-semibold text-primary">{children}</span>
+  ),
 }
 
 function ReadingContent() {
@@ -372,7 +385,7 @@ function ReadingContent() {
                             <p className="font-semibold text-sm">{msg.sender}</p>
                           </div>
                           <div className="text-sm leading-relaxed prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-ul:my-2 prose-li:my-1">
-                            <ReactMarkdown>{msg.message}</ReactMarkdown>
+                            <ReactMarkdown components={markdownComponents}>{msg.message}</ReactMarkdown>
                           </div>
                         </div>
                       </div>
@@ -413,6 +426,72 @@ function ReadingContent() {
                 </CardContent>
               </Card>
 
+              {/* CTA Block - Explore other areas */}
+              {!isGenerating && chatMessages.length > 0 && (
+                <div className="mt-12 p-6 md:p-8 bg-card/80 backdrop-blur-sm rounded-xl border border-primary/20">
+                  <h3 className="text-2xl font-serif text-primary text-center mb-6">Explora otras áreas de tu vida</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Link
+                      href={`/lectura?personaje=${selectedCharacter || "sybil"}&pregunta=${encodeURIComponent("Quiero saber qué me espera en el amor")}`}
+                      className="w-full"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full py-6 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all duration-300 group bg-transparent"
+                      >
+                        <Heart className="w-5 h-5 mr-2 text-rose-400 group-hover:scale-110 transition-transform" />
+                        <span>Preguntar sobre el amor</span>
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`/lectura?personaje=${selectedCharacter || "sybil"}&pregunta=${encodeURIComponent("Cómo se presenta mi futuro en trabajo y dinero")}`}
+                      className="w-full"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full py-6 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all duration-300 group bg-transparent"
+                      >
+                        <Briefcase className="w-5 h-5 mr-2 text-amber-400 group-hover:scale-110 transition-transform" />
+                        <span>Preguntar sobre trabajo y dinero</span>
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`/lectura?personaje=${selectedCharacter || "sybil"}&pregunta=${encodeURIComponent("Quiero una lectura más profunda sobre este mismo asunto")}`}
+                      className="w-full"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full py-6 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all duration-300 group bg-transparent"
+                      >
+                        <Search className="w-5 h-5 mr-2 text-purple-400 group-hover:scale-110 transition-transform" />
+                        <span>Profundizar en este mismo tema</span>
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Return/Retention Block */}
+              {!isGenerating && chatMessages.length > 0 && (
+                <div className="mt-8 text-center py-6 border-t border-primary/10">
+                  <p className="text-muted-foreground mb-4">¿Te ha ayudado esta lectura?</p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <Link href="/">
+                      <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/5">
+                        <Home className="w-4 h-4 mr-2" />
+                        Volver al Oráculo de Elara
+                      </Button>
+                    </Link>
+                    <Link href="/#oracle-selector">
+                      <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/5">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Hacer otra pregunta ahora
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
               <div className="mt-8 p-5 bg-amber-50/5 rounded-lg border-l-4 border-amber-200/60">
                 <div className="flex items-start gap-4">
                   <Shield className="w-5 h-5 text-amber-200/80 mt-0.5 flex-shrink-0" />
@@ -438,13 +517,7 @@ function ReadingContent() {
 
 export default function ReadingPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Sparkles className="w-8 h-8 text-primary animate-spin" />
-        </div>
-      }
-    >
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><Sparkles className="w-8 h-8 text-primary animate-spin" /></div>}>
       <ReadingContent />
     </Suspense>
   )
