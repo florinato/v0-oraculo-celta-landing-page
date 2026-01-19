@@ -239,7 +239,7 @@ function ReadingContent() {
   const backgroundImage = selectedCharacter ? characterBackgrounds[selectedCharacter] : null
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen bg-background relative overflow-hidden w-screen">
       {/* Character Background with low opacity */}
       {backgroundImage && (
         <div className="fixed inset-0 z-0 pointer-events-none">
@@ -254,8 +254,8 @@ function ReadingContent() {
       )}
 
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border overflow-hidden">
+        <div className="w-full px-2 md:px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -271,9 +271,9 @@ function ReadingContent() {
         </div>
       </header>
 
-      <main className="pt-20">
+      <main className="pt-20 overflow-x-hidden w-full">
         {/* Question Display */}
-        <section className="container mx-auto px-4 py-8">
+        <section className="w-full px-2 md:px-4 py-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl font-serif text-primary mb-4">Tu Pregunta</h2>
             <p className="text-lg text-muted-foreground italic">"{question}"</p>
@@ -282,11 +282,11 @@ function ReadingContent() {
 
         {/* Celtic Cross Reading */}
         {showReading && (
-          <section className="container mx-auto px-4 py-16">
+          <section className="w-full px-2 md:px-4 py-16">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
 
-              <div className="grid grid-cols-4 grid-rows-5 gap-6 md:gap-12 max-w-xl mx-auto relative h-200">
+              <div className="grid grid-cols-4 grid-rows-5 gap-x-3 gap-y-0 md:gap-x-12 md:gap-y-14 max-w-xs md:max-w-xl mx-auto relative md:h-200" style={{height: "408px", minHeight: "408px"}}>
                 {celticCrossPositions.map((positionInfo, index) => {
                   const isReversed = cardOrientations[index]
                   const card = shuffledCards[index]
@@ -303,19 +303,19 @@ function ReadingContent() {
                         onClick={() => handleCardClick(index)}
                       >
                         <div className="transition-transform duration-500">
-                          <div className="relative w-24 h-40 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/40 bg-linear-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
+                          <div className="relative w-16 h-28 md:w-24 md:h-40 rounded-none overflow-hidden shadow-2xl border-2 border-primary/40 bg-linear-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
                             {/* Efecto de brillo en hover */}
                             <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                             {/* Marco interior decorativo */}
-                            <div className="absolute inset-1 border border-primary/20 rounded-lg pointer-events-none" />
+                            <div className="absolute inset-1 border border-primary/20 rounded-none pointer-events-none" />
 
                             {/* Imagen de la carta */}
                             <Image
                               src={card.image || "/placeholder.svg"}
                               alt={card.name}
-                              width={88}
-                              height={152}
+                              width={64}
+                              height={112}
                               className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
                               onError={() => console.log("[v0] Image failed to load:", card.image, "Card:", card.name)}
                             />
@@ -325,7 +325,7 @@ function ReadingContent() {
                           </div>
                         </div>
 
-                        <div className="mt-2">
+                        <div className="mt-2 hidden md:block">
                           <p className="text-xs text-center text-muted-foreground font-medium card-position-name drop-shadow-sm">
                             {positionInfo.name}
                           </p>
@@ -365,13 +365,13 @@ function ReadingContent() {
 
         {/* Chat Section */}
         {showChat && (
-          <section className="container mx-auto px-0 md:px-4 py-16">
-            <div className="max-w-4xl mx-auto px-2 md:px-0">
+          <section className="w-full px-2 md:px-4 py-16">
+            <div className="max-w-4xl mx-auto px-0">
               <h2 className="text-3xl font-serif text-center mb-8 text-primary">Interpretación y Consulta</h2>
 
-              <Card className="bg-card/95 backdrop-blur-sm border-primary/30">
-                <CardContent className="p-0 md:p-6">
-                  <div className="space-y-6 mb-6 px-2 md:px-0">
+              <Card className="bg-card/95 backdrop-blur-sm border-primary/30 rounded-none md:rounded-lg">
+                <CardContent className="p-4 md:p-6">
+                  <div className="space-y-6 mb-6 px-0">
                     {chatMessages.map((msg, index) => (
                       <div key={index} className={`flex ${msg.sender === "Tú" ? "justify-end" : "justify-start"}`}>
                         <div
@@ -407,7 +407,7 @@ function ReadingContent() {
                     )}
                   </div>
 
-                  <div className="flex gap-1 md:gap-3 px-2 md:px-0">
+                  <div className="flex gap-1 md:gap-3 px-0">
                     <Input
                       placeholder="Haz una pregunta de seguimiento..."
                       value={newMessage}
