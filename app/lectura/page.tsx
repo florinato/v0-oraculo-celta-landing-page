@@ -286,7 +286,7 @@ function ReadingContent() {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
 
-              <div className="grid grid-cols-4 grid-rows-5 gap-4 md:gap-8 max-w-xl mx-auto relative h-175">
+              <div className="grid grid-cols-4 grid-rows-5 gap-6 md:gap-12 max-w-xl mx-auto relative h-200">
                 {celticCrossPositions.map((positionInfo, index) => {
                   const isReversed = cardOrientations[index]
                   const card = shuffledCards[index]
