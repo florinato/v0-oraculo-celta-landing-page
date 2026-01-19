@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import * as tarotCardsModule from "@/lib/tarotCards"
-import { ArrowLeft, Moon, Sparkles, Shield, Heart, Briefcase, Search, Home } from "lucide-react"
+import { ArrowLeft, Briefcase, Heart, Home, Moon, Search, Shield, Sparkles } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -45,10 +45,10 @@ const characterBackgrounds: Record<string, string> = {
 
 // Custom markdown components for styling
 const markdownComponents = {
-  strong: ({ children }: { children: React.ReactNode }) => (
+  strong: ({ children }: { children?: React.ReactNode }) => (
     <span className="font-semibold text-primary">{children}</span>
   ),
-  b: ({ children }: { children: React.ReactNode }) => (
+  b: ({ children }: { children?: React.ReactNode }) => (
     <span className="font-semibold text-primary">{children}</span>
   ),
 }
@@ -286,7 +286,7 @@ function ReadingContent() {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
 
-              <div className="grid grid-cols-4 grid-rows-5 gap-4 md:gap-8 max-w-xl mx-auto relative h-[700px]">
+              <div className="grid grid-cols-4 grid-rows-5 gap-4 md:gap-8 max-w-xl mx-auto relative h-175">
                 {celticCrossPositions.map((positionInfo, index) => {
                   const isReversed = cardOrientations[index]
                   const card = shuffledCards[index]
@@ -303,9 +303,9 @@ function ReadingContent() {
                         onClick={() => handleCardClick(index)}
                       >
                         <div className="transition-transform duration-500">
-                          <div className="relative w-22 h-38 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
+                          <div className="relative w-24 h-40 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/40 bg-linear-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
                             {/* Efecto de brillo en hover */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                             {/* Marco interior decorativo */}
                             <div className="absolute inset-1 border border-primary/20 rounded-lg pointer-events-none" />
@@ -321,7 +321,7 @@ function ReadingContent() {
                             />
 
                             {/* Overlay sutil con gradiente */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                           </div>
                         </div>
 
@@ -495,7 +495,7 @@ function ReadingContent() {
 
               <div className="mt-8 p-5 bg-amber-50/5 rounded-lg border-l-4 border-amber-200/60">
                 <div className="flex items-start gap-4">
-                  <Shield className="w-5 h-5 text-amber-200/80 mt-0.5 flex-shrink-0" />
+                  <Shield className="w-5 h-5 text-amber-200/80 mt-0.5 shrink-0" />
                   <div className="text-left space-y-2">
                     <p className="text-base text-amber-200/90 tracking-wide">
                       consulta anónima ◆ lecturas gratis ◆ sin necesidad de registro

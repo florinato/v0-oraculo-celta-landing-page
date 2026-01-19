@@ -8,8 +8,18 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
-    domains: ['localhost', process.env.VERCEL_URL || 'localhost'].filter(Boolean),
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: process.env.VERCEL_URL || 'localhost',
+      },
+    ],
   },
+  output: 'standalone',
 }
 
 export default nextConfig

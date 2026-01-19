@@ -57,7 +57,7 @@ export function OracleCharacterSelector() {
           >
             <motion.div
               className={`relative w-40 h-40 rounded-full overflow-hidden border-4 ${character.borderColor} 
-              bg-gradient-to-br ${character.color} shadow-2xl cursor-pointer`}
+              bg-linear-to-br ${character.color} shadow-2xl cursor-pointer`}
               whileHover={getHoverAnimation(key)}
               onClick={() => handleSelectCharacter(key as OracleCharacter)}
             >
@@ -68,7 +68,7 @@ export function OracleCharacterSelector() {
                 height={160}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent" />
 
               {key === "morvan" && (
                 <motion.div
@@ -109,7 +109,7 @@ export function OracleCharacterSelector() {
 
             <Button
               onClick={() => handleSelectCharacter(key as OracleCharacter)}
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 
+              className="w-full bg-linear-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 
               text-white font-serif font-semibold gap-2 border-2 border-amber-400/50 shadow-lg shadow-amber-500/20"
             >
               <Sparkles className="w-4 h-4" />
