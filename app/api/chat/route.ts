@@ -1,100 +1,143 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { type NextRequest } from "next/server"
 
 interface Card {
-  carta: string
-  posicion: string
-  orientacion: string
-}
-
-const buildCardsContext = (cards: Card[]): string => {
-  return cards.map((card) => `Carta: ${card.carta} (${card.posicion}, ${card.orientacion}).`).join(" ")
+  position: number
+  name: string
+  is_reversed: boolean
 }
 
 export async function POST(request: NextRequest) {
   try {
     const {
-      message,
-      conversationId,
-      question,
+      personality_prompt,
+      format_id,
+      user_question,
       cards,
-    }: { message: string; conversationId?: string; question: string; cards: Card[] } = await request.json()
+    }: {
+      personality_prompt: string
+      format_id: string
+      user_question: string
+      cards: Card[]
+    } = await request.json()
 
-    if (!message && !conversationId && (!question || !cards || !cards.length)) {
-      return NextResponse.json({ error: "Faltan parámetros requeridos: message, question, o cards." }, { status: 400 })
+    if (!user_question || !cards || !cards.length || !personality_prompt || !format_id) {
+      return new Response(JSON.stringify({ error: "Faltan parámetros requeridos: personality_prompt, format_id, user_question, cards." }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
-    console.log("[v0] Chat API called with:", { message, conversationId, question: question, cardCount: cards.length })
+    console.log("[v0] Chat API called with:", {
+      personality_prompt,
+      format_id,
+      user_question,
+      cardCount: cards.length
+    })
 
-    const difyApiKey = process.env.DIFY_API_KEY
-    let difyApiUrl = process.env.DIFY_API_URL || "https://api.dify.ai/v1"
+    const apiSecret = process.env.FRONTEND_API_SECRET
+    const apiUrl = process.env.URL_LOCAL || "http://0.0.0.0:8080"
 
-    if (difyApiUrl && !difyApiUrl.startsWith("http")) {
-      difyApiUrl = "https://api.dify.ai/v1"
+    if (!apiSecret) {
+      console.log("[v0] FRONTEND_API_SECRET not configured")
+      return new Response(JSON.stringify({ error: "API secret not configured" }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
-
-    console.log("[v0] Dify URL being used:", difyApiUrl)
-    console.log("[v0] Dify API key configured:", !!difyApiKey)
-
-    if (!difyApiKey) {
-      console.log("[v0] Dify API key not configured")
-      return NextResponse.json({ error: "Dify API key not configured" }, { status: 500 })
-    }
-
-    console.log("[v0] Dify API key configured")
-
-    const cardsDescription = buildCardsContext(cards)
-    const initialPrompt = `Eres Madame Elara, una sabia tarotista. La consulta fue: "${question}". La tirada de la Cruz Celta es la siguiente: ${cardsDescription}. Responde en español con tono místico pero accesible.`
 
     const requestBody = {
-      inputs: {},
-      query: message || initialPrompt,
-      response_mode: "blocking",
-      user: "tarot-user",
-      ...(conversationId && { conversation_id: conversationId }),
+      personality_prompt,
+      format_id,
+      knowledge_base_id: "none",
+      user_question,
+      cards
     }
 
-    console.log("[v0] Sending request to Dify:", JSON.stringify(requestBody, null, 2))
+    console.log("[v0] Sending request to backend:", JSON.stringify(requestBody, null, 2))
 
-    const response = await fetch(`${difyApiUrl}/chat-messages`, {
+    const response = await fetch(`${apiUrl}/api/interpretar`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${difyApiKey}`,
         "Content-Type": "application/json",
+        "X-Custom-Auth-Token": apiSecret
       },
       body: JSON.stringify(requestBody),
     })
 
-    console.log("[v0] Dify response status:", response.status)
+    console.log("[v0] Backend response status:", response.status)
 
-    const contentType = response.headers.get("content-type") || ""
-    const isJson = contentType.includes("application/json")
-
-    if (!isJson || !response.ok) {
+    if (!response.ok) {
       const errorText = await response.text()
-      console.log("[v0] Dify non-JSON or error response:", errorText.substring(0, 200))
-      console.log("[v0] Response content-type:", contentType)
-      console.log("[v0] Full Dify URL attempted:", `${difyApiUrl}/chat-messages`)
+      console.log("[v0] Backend error response:", errorText.substring(0, 200))
 
-      return NextResponse.json({
-        message:
-          "Disculpa, las energías cósmicas están perturbadas en este momento. Como Madame Elara, puedo decirte que las cartas sugieren paciencia y reflexión.",
+      return new Response(JSON.stringify({
+        message: "Disculpa, las energías cósmicas están perturbadas en este momento. Las cartas sugieren paciencia y reflexión.",
         fallback: true,
+      }), {
+        headers: { 'Content-Type': 'application/json' }
       })
     }
 
-    const data = await response.json()
-    console.log("[v0] Dify success response:", data)
+    // Configurar streaming response
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
 
-    return NextResponse.json({
-      message: data.answer,
-      conversationId: data.conversation_id,
+        if (!reader) {
+          controller.close()
+          return
+        }
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+
+            if (done) {
+              controller.close()
+              break
+            }
+
+            const chunk = decoder.decode(value, { stream: true })
+            const lines = chunk.split('\n')
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(6))
+                  if (data.text) {
+                    controller.enqueue(`data: ${JSON.stringify({ text: data.text })}\n\n`)
+                  }
+                } catch (e) {
+                  // Ignorar líneas que no sean JSON válido
+                  console.log("[v0] Ignored non-JSON line:", line)
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error("[v0] Error processing stream:", error)
+          controller.error(error)
+        }
+      }
     })
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    })
+
   } catch (error) {
     console.error("[v0] Error in chat API:", error)
-    return NextResponse.json({
-      message:
-        "Las cartas se han nublado momentáneamente. Como Madame Elara, siento que las energías necesitan realinearse. Tu consulta es importante, pero las fuerzas cósmicas requieren un momento de pausa antes de revelar sus secretos.",
+    return new Response(JSON.stringify({
+      message: "Las cartas se han nublado momentáneamente. Las energías necesitan realinearse antes de revelar sus secretos.",
       fallback: true,
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 }

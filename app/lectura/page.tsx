@@ -118,18 +118,23 @@ function ReadingContent() {
     try {
       console.log("[v0] Initializing chat with question:", pregunta)
 
+      // Determinar format_id basado en número de cartas (10 para cruz celta)
+      const formatId = newShuffledCards.length === 10 ? "celta_10" : "simple_5"
+      const personalityPrompt = selectedCharacter || "sybil" // Default a sybil si no hay personaje seleccionado
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          question: pregunta,
+          personality_prompt: personalityPrompt,
+          format_id: formatId,
+          user_question: pregunta,
           cards: newShuffledCards.map((card, index) => ({
-            carta: card.name,
-            posicion: celticCrossPositions[index].name,
-            orientacion: newOrientations[index] ? "derecha" : "invertida",
-            description: newOrientations[index] ? card.description.upright : card.description.reversed,
+            position: index + 1,
+            name: card.name,
+            is_reversed: !newOrientations[index], // Invertir la lógica: true significa invertida
           })),
         }),
       })
@@ -138,20 +143,68 @@ function ReadingContent() {
         throw new Error(`Error en la API: ${response.statusText}`)
       }
 
-      const data = await response.json()
-      console.log("[v0] Chat initialization response:", data)
+      // Procesar streaming response
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+      let accumulatedMessage = ""
 
-      if (data.conversationId) {
-        setConversationId(data.conversationId)
+      if (reader) {
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+
+            if (done) break
+
+            const chunk = decoder.decode(value, { stream: true })
+            const lines = chunk.split('\n')
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(6))
+                  if (data.text) {
+                    accumulatedMessage += data.text
+                    // Actualizar el mensaje en tiempo real
+                    setChatMessages(prev => {
+                      const newMessages = [...prev]
+                      if (newMessages.length === 0 || newMessages[newMessages.length - 1].sender !== "Madame Elara") {
+                        newMessages.push({
+                          sender: "Madame Elara",
+                          message: accumulatedMessage
+                        })
+                      } else {
+                        newMessages[newMessages.length - 1] = {
+                          sender: "Madame Elara",
+                          message: accumulatedMessage
+                        }
+                      }
+                      return newMessages
+                    })
+                  }
+                } catch (e) {
+                  console.log("[v0] Ignored non-JSON line:", line)
+                }
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock()
+        }
       }
 
-      setChatMessages([
-        {
-          sender: "Madame Elara",
-          message:
-            data.message || "Bienvenido/a al reino de las cartas. Las energías están alineándose para tu consulta.",
-        },
-      ])
+      console.log("[v0] Chat initialization completed")
+
+      // Asegurar que haya al menos un mensaje inicial si no se recibió ninguno
+      setChatMessages(prev => {
+        if (prev.length === 0) {
+          return [{
+            sender: "Madame Elara",
+            message: "Bienvenido/a al reino de las cartas. Las energías están alineándose para tu consulta."
+          }]
+        }
+        return prev
+      })
+
     } catch (error) {
       handleApiError(error, "initialization")
     } finally {
@@ -172,20 +225,23 @@ function ReadingContent() {
       try {
         console.log("[v0] Sending message:", userMessage)
 
+        // Para mensajes de seguimiento, usamos la misma estructura pero adaptamos la pregunta
+        const formatId = shuffledCards.length === 10 ? "celta_10" : "simple_5"
+        const personalityPrompt = selectedCharacter || "sybil"
+
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            message: userMessage,
-            conversationId: conversationId,
-            question: question,
+            personality_prompt: personalityPrompt,
+            format_id: formatId,
+            user_question: `${question} - Pregunta de seguimiento: ${userMessage}`,
             cards: shuffledCards.map((card, index) => ({
-              carta: card.name,
-              posicion: celticCrossPositions[index].name,
-              orientacion: cardOrientations[index] ? "derecha" : "invertida",
-              description: cardOrientations[index] ? card.description.upright : card.description.reversed,
+              position: index + 1,
+              name: card.name,
+              is_reversed: !cardOrientations[index], // Invertir la lógica: true significa invertida
             })),
           }),
         })
@@ -194,22 +250,57 @@ function ReadingContent() {
           throw new Error(`Error en la API: ${response.statusText}`)
         }
 
-        const data = await response.json()
-        console.log("[v0] Message response:", data)
+        // Procesar streaming response
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
+        let accumulatedMessage = ""
 
-        if (data.conversationId) {
-          setConversationId(data.conversationId)
+        if (reader) {
+          try {
+            while (true) {
+              const { done, value } = await reader.read()
+
+              if (done) break
+
+              const chunk = decoder.decode(value, { stream: true })
+              const lines = chunk.split('\n')
+
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  try {
+                    const data = JSON.parse(line.slice(6))
+                    if (data.text) {
+                      accumulatedMessage += data.text
+                      // Actualizar el mensaje en tiempo real
+                      setChatMessages(prev => {
+                        const newMessages = [...prev]
+                        if (newMessages[newMessages.length - 1].sender === "Tú") {
+                          newMessages.push({
+                            sender: "Madame Elara",
+                            message: accumulatedMessage
+                          })
+                        } else {
+                          newMessages[newMessages.length - 1] = {
+                            sender: "Madame Elara",
+                            message: accumulatedMessage
+                          }
+                        }
+                        return newMessages
+                      })
+                    }
+                  } catch (e) {
+                    console.log("[v0] Ignored non-JSON line:", line)
+                  }
+                }
+              }
+            }
+          } finally {
+            reader.releaseLock()
+          }
         }
 
-        setChatMessages((prev) => [
-          ...prev,
-          {
-            sender: "Madame Elara",
-            message:
-              data.message ||
-              "Las cartas susurran secretos que requieren más claridad. Reformula tu pregunta, querido/a consultante.",
-          },
-        ])
+        console.log("[v0] Message response completed")
+
       } catch (error) {
         handleApiError(error, "message")
       } finally {

@@ -435,74 +435,74 @@ export const tarotCards = [
     description: { upright: "Hombre lógico, inteligencia, poder mental", reversed: "Tiranía, crueldad intelectual" },
   },
   
-  // Arcanos Menores - Varas
+  // Arcanos Menores - Bastos
   {
-    name: "As de Varas",
+    name: "As de Bastos",
     image: "/tarot-images-bis/Wands01.jpg",
     description: { upright: "Inspiración, nuevo proyecto, energía", reversed: "Bloqueo, falta de energía" },
   },
   {
-    name: "Dos de Varas",
+    name: "Dos de Bastos",
     image: "/tarot-images-bis/Wands02.jpg",
     description: { upright: "Planificación, decisión, poder", reversed: "Cambio de planes, inseguridad" },
   },
   {
-    name: "Tres de Varas",
+    name: "Tres de Bastos",
     image: "/tarot-images-bis/Wands03.jpg",
     description: { upright: "Trabajo en progreso, colaboración, visión", reversed: "Retraso, falta de coordinación" },
   },
   {
-    name: "Cuatro de Varas",
+    name: "Cuatro de Bastos",
     image: "/tarot-images-bis/Wands04.jpg",
     description: { upright: "Celebración, armonía, éxito", reversed: "Privación, ruptura" },
   },
   {
-    name: "Cinco de Varas",
+    name: "Cinco de Bastos",
     image: "/tarot-images-bis/Wands05.jpg",
     description: { upright: "Conflicto, competencia, desacuerdo", reversed: "Resolución, acuerdo" },
   },
   {
-    name: "Seis de Varas",
+    name: "Seis de Bastos",
     image: "/tarot-images-bis/Wands06.jpg",
     description: { upright: "Victoria, éxito, reconocimiento", reversed: "Falta de reconocimiento, fracaso" },
   },
   {
-    name: "Siete de Varas",
+    name: "Siete de Bastos",
     image: "/tarot-images-bis/Wands07.jpg",
     description: { upright: "Desafío, defensa, valor", reversed: "Claudicación, derrota" },
   },
   {
-    name: "Ocho de Varas",
+    name: "Ocho de Bastos",
     image: "/tarot-images-bis/Wands08.jpg",
     description: { upright: "Movimiento rápido, progreso, velocidad", reversed: "Retrasos, indecisión" },
   },
   {
-    name: "Nueve de Varas",
+    name: "Nueve de Bastos",
     image: "/tarot-images-bis/Wands09.jpg",
     description: { upright: "Resistencia, fuerza, persistencia", reversed: "Agotamiento, falta de energía" },
   },
   {
-    name: "Diez de Varas",
+    name: "Diez de Bastos",
     image: "/tarot-images-bis/Wands10.jpg",
     description: { upright: "Carga, responsabilidad, presión", reversed: "Alivio, liberación" },
   },
   {
-    name: "Sota de Varas",
+    name: "Sota de Bastos",
     image: "/tarot-images-bis/Wands11.jpg",
     description: { upright: "Joven entusiasta, aventurero, pasionario", reversed: "Falta de dirección, apatía" },
   },
   {
-    name: "Caballo de Varas",
+    name: "Caballo de Bastos",
     image: "/tarot-images-bis/Wands12.jpg",
     description: { upright: "Pasión, energía, aventura", reversed: "Falta de control, impulsividad" },
   },
   {
-    name: "Reina de Varas",
+    name: "Reina de Bastos",
     image: "/tarot-images-bis/Wands13.jpg",
     description: { upright: "Mujer confiada, apasionada, magnética", reversed: "Celos, inseguridad" },
   },
   {
-    name: "Rey de Varas",
+    name: "Rey de Bastos",
     image: "/tarot-images-bis/Wands14.jpg",
     description: { upright: "Hombre carismático, visionario, líder", reversed: "Tiranía, arrogancia" },
   },
