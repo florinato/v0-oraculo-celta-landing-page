@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     })
 
     const apiSecret = process.env.FRONTEND_API_SECRET
-    const apiUrl = process.env.URL_LOCAL || "http://0.0.0.0:8080"
+    const apiUrl = process.env.URL_GOOGLE || "http://0.0.0.0:8080"
 
     if (!apiSecret) {
       console.log("[v0] FRONTEND_API_SECRET not configured")
