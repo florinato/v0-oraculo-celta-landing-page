@@ -394,7 +394,7 @@ function ReadingContent() {
                         onClick={() => handleCardClick(index)}
                       >
                         <div className="transition-transform duration-500">
-                          <div className="relative w-16 h-28 md:w-24 md:h-40 rounded-none overflow-hidden shadow-2xl border-2 border-primary/40 bg-linear-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
+                          <div className="relative w-24 h-40 rounded-none overflow-hidden shadow-2xl border-2 border-primary/40 bg-linear-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
                             {/* Efecto de brillo en hover */}
                             <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
@@ -416,7 +416,7 @@ function ReadingContent() {
                           </div>
                         </div>
 
-                        <div className="mt-2 hidden md:block">
+                        <div className="mt-2 block">
                           <p className="text-xs text-center text-muted-foreground font-medium card-position-name drop-shadow-sm">
                             {positionInfo.name}
                           </p>
