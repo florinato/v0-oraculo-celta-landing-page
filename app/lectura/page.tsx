@@ -14,16 +14,16 @@ import { Suspense, useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
 
 const celticCrossPositions = [
-  { id: 1, name: "1. La situación actual", position: "col-start-2 row-start-2" },
-  { id: 2, name: "2. Lo que lo obstaculiza", position: "col-start-2 row-start-3" },
-  { id: 3, name: "3. Su base o raíz", position: "col-start-2 row-start-4" },
-  { id: 4, name: "4. Su pasado más reciente", position: "col-start-1 row-start-2" },
-  { id: 5, name: "5. Las posibilidades", position: "col-start-2 row-start-1" },
-  { id: 6, name: "6. Su futuro inmediato", position: "col-start-3 row-start-2" },
-  { id: 7, name: "7. El consultante", position: "col-start-4 row-start-4" },
-  { id: 8, name: "8. El entorno", position: "col-start-4 row-start-3" },
-  { id: 9, name: "9. Anhelos o temores", position: "col-start-4 row-start-2" },
-  { id: 10, name: "10. El desenlace final", position: "col-start-4 row-start-1" },
+  { id: 1, name: "1. Situación actual", position: "col-start-2 row-start-2" },
+  { id: 2, name: "2. Obstáculos", position: "col-start-2 row-start-3" },
+  { id: 3, name: "3. Base raíz", position: "col-start-2 row-start-4" },
+  { id: 4, name: "4. Pasado reciente", position: "col-start-1 row-start-2" },
+  { id: 5, name: "5. Posibilidades", position: "col-start-2 row-start-1" },
+  { id: 6, name: "6. Futuro inmediato", position: "col-start-3 row-start-2" },
+  { id: 7, name: "7. Consultante", position: "col-start-4 row-start-4" },
+  { id: 8, name: "8. Entorno", position: "col-start-4 row-start-3" },
+  { id: 9, name: "9. Anhelos temores", position: "col-start-4 row-start-2" },
+  { id: 10, name: "10. Desenlace final", position: "col-start-4 row-start-1" },
 ]
 
 const tarotCards = tarotCardsModule.tarotCards
