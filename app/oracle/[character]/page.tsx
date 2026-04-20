@@ -43,11 +43,20 @@ export default function OracleQuestionPage() {
       <div className="min-h-screen relative overflow-hidden">
         {/* Integrated Background with Character */}
         <div className="absolute inset-0 z-0">
+          {/* Mobile image */}
           <Image
-            src={characterInfo.image}
+            src="/images/vidente.jpg"
             alt={`${characterInfo.name} en su ambiente místico`}
             fill
-            className="object-cover object-top"
+            className="object-cover object-top md:hidden"
+            priority
+          />
+          {/* Desktop/Tablet image */}
+          <Image
+            src="/images/vidente_desk.jpg"
+            alt={`${characterInfo.name} en su ambiente místico`}
+            fill
+            className="object-cover object-top hidden md:block"
             priority
           />
           <div className="absolute inset-0 bg-black/30" />
