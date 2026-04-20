@@ -6,7 +6,7 @@ export const oracleCharacters = {
     intro: "Aislinn es una vidente conectada con la magia natural. Sus lecturas revelan los hilos del destino.",
     color: "from-emerald-600 to-emerald-800",
     borderColor: "border-emerald-500/50",
-    image: "/images/aislinn-portrait.jpg",
+    image: "/images/vidente.png",
   },
   morvan: {
     id: "morvan",
