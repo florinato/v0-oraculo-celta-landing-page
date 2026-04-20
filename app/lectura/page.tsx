@@ -377,9 +377,9 @@ function ReadingContent() {
 
         {/* Celtic Cross Reading */}
         {showReading && (
-          <section className="w-full px-2 md:px-4 py-16">
+          <section className="w-full px-2 md:px-4 py-0">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
+              <h2 className="text-4xl font-serif text-center mb-2 text-primary">Tu Tirada de la Cruz Celta</h2>
 
               <div className="grid grid-cols-4 grid-rows-5 gap-x-3 gap-y-0 md:gap-x-12 md:gap-y-14 max-w-md md:max-w-xl mx-auto relative md:h-200" style={{height: "700px", minHeight: "700px"}}>
                 {celticCrossPositions.map((positionInfo, index) => {
