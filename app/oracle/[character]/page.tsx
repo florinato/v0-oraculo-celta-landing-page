@@ -159,7 +159,7 @@ export default function OracleQuestionPage() {
               <Button
                 onClick={handleConsultOracle}
                 size="lg"
-                className="w-full md:w-auto px-12 py-4 text-lg font-semibold !bg-rose-400 hover:!bg-rose-500 !text-white"
+                className="w-full md:w-auto px-12 py-4 text-lg font-semibold"
                 disabled={!question.trim()}
               >
                 Consultar a {characterInfo.name}

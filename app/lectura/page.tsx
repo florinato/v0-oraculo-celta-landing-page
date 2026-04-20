@@ -562,7 +562,7 @@ function ReadingContent() {
                     <Button
                       onClick={handleSendMessage}
                       disabled={!newMessage.trim() || isLoading}
-                      className="bg-rose-400 hover:bg-rose-500 text-white font-semibold"
+                      className="font-semibold"
                     >
                       {isLoading ? <Sparkles className="w-4 h-4 animate-spin" /> : "Enviar"}
                     </Button>
