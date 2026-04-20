@@ -411,7 +411,7 @@ function ReadingContent() {
                               alt={card.name}
                               width={64}
                               height={112}
-                              className={`w-full h-full object-cover ${isReversed ? "rotate-180" : ""}`}
+                              className={`w-full h-full object-cover ${isReversed ? "" : ""}`}
                               onError={() => console.log("[v0] Image failed to load:", card.image, "Card:", card.name)}
                             />
 
