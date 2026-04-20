@@ -507,7 +507,7 @@ function ReadingContent() {
             <div className="max-w-4xl mx-auto px-0">
               <h2 className="text-3xl font-serif text-center mb-0 text-primary">Interpretación y Consulta</h2>
 
-              <Card className="bg-card/95 backdrop-blur-sm border-primary/30 rounded-none md:rounded-lg">
+              <Card className="bg-card/95 backdrop-blur-sm border-primary/30 rounded-none md:rounded-lg m-0">
                 <CardContent className="p-4 md:p-6">
                   <div className="space-y-6 mb-6 px-0">
                     {chatMessages.map((msg, index) => (
