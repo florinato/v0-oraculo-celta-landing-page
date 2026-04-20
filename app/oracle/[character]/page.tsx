@@ -44,7 +44,7 @@ export default function OracleQuestionPage() {
         {/* Integrated Background with Character */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={`/images/${character}-scene.jpg`}
+            src={characterInfo.image}
             alt={`${characterInfo.name} en su ambiente místico`}
             fill
             className="object-cover object-top"
