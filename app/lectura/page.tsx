@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import * as tarotCardsModule from "@/lib/tarotCards"
-import { ArrowLeft, Briefcase, Heart, Home, Moon, Search, Shield, Sparkles } from "lucide-react"
+import { ArrowLeft, Briefcase, Heart, Home, Moon, Search, Shield, Sparkles, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -63,6 +63,7 @@ function ReadingContent() {
   const [isLoading, setIsLoading] = useState(false)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [clickedCard, setClickedCard] = useState<number | null>(null)
+  const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
   const [cardOrientations, setCardOrientations] = useState<boolean[]>([])
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const [shuffledCards, setShuffledCards] = useState<typeof tarotCards>([])
@@ -394,7 +395,7 @@ function ReadingContent() {
                         className="relative cursor-pointer transition-all duration-300 hover:scale-110 hover:z-20 group"
                         onMouseEnter={() => handleCardHover(index)}
                         onMouseLeave={handleCardLeave}
-                        onClick={() => handleCardClick(index)}
+                        onClick={() => setSelectedCardIndex(index)}
                       >
                         <div className="transition-transform duration-500">
                           <div className="relative w-24 h-40 rounded-none overflow-hidden shadow-2xl border-2 border-primary/40 bg-linear-to-br from-primary/5 to-primary/20 backdrop-blur-sm group-hover:border-primary/60 group-hover:shadow-primary/30 group-hover:shadow-2xl transition-all duration-300">
@@ -424,30 +425,6 @@ function ReadingContent() {
                             {positionInfo.name}
                           </p>
                         </div>
-
-                        <div
-                          className={`absolute z-50 bg-card/95 backdrop-blur-md border-2 border-primary/40 rounded-xl p-4 shadow-2xl w-72 max-w-[90vw]
-                          ${positionInfo.id === 2 ? "top-[calc(100%+1rem)] left-1/2 -translate-x-1/2" : index < 5 ? "-top-4 left-full ml-4" : "-bottom-4 right-full mr-4"}
-                          transform transition-all duration-200 pointer-events-none
-                          ${showTooltip ? "opacity-100 scale-100" : "opacity-0 scale-95"}
-                          md:pointer-events-none
-                          before:absolute before:w-3 before:h-3 before:bg-card before:border-l-2 before:border-t-2 before:border-primary/40 before:rotate-45
-                          ${positionInfo.id === 2 ? "before:-top-1.5 before:left-1/2 before:-translate-x-1/2" : index < 5 ? "before:left-0 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2" : "before:right-0 before:top-1/2 before:-translate-y-1/2 before:translate-x-1/2"}
-                          `}
-                        >
-                          <div className="relative z-10">
-                            <h3 className="font-serif text-primary font-semibold mb-1 text-sm flex items-center gap-2">
-                              <Sparkles className="w-3 h-3" />
-                              {positionInfo.name}
-                            </h3>
-                            <h4 className="font-semibold mb-2 text-sm text-foreground">
-                              {card.name} {isReversed ? "(Invertida)" : "(Derecha)"}
-                            </h4>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {isReversed ? card.description.reversed : card.description.upright}
-                            </p>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   )
@@ -455,6 +432,73 @@ function ReadingContent() {
               </div>
             </div>
           </section>
+        )}
+
+        {/* Card Detail Modal - Fullscreen */}
+        {selectedCardIndex !== null && shuffledCards[selectedCardIndex] && (
+          <div
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setSelectedCardIndex(null)}
+          >
+            <div
+              className="bg-card/95 backdrop-blur-md border-2 border-primary/40 rounded-xl p-8 md:p-12 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedCardIndex(null)}
+                className="absolute top-4 right-4 text-muted-foreground hover:text-primary transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Card Content */}
+              <div className="space-y-6">
+                {/* Position Info */}
+                <div className="text-center">
+                  <p className="text-sm text-primary font-semibold tracking-wide uppercase mb-2">
+                    {celticCrossPositions[selectedCardIndex].name}
+                  </p>
+                  <h2 className="text-4xl font-serif text-foreground">
+                    {shuffledCards[selectedCardIndex].name}
+                  </h2>
+                </div>
+
+                {/* Card Image */}
+                <div className="flex justify-center">
+                  <div className="relative w-48 h-72 rounded-lg overflow-hidden shadow-2xl border-2 border-primary/40">
+                    <Image
+                      src={shuffledCards[selectedCardIndex].image || "/placeholder.svg"}
+                      alt={shuffledCards[selectedCardIndex].name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-2 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5" />
+                      Significado
+                    </h3>
+                    <p className="text-foreground leading-relaxed">
+                      {shuffledCards[selectedCardIndex].description.upright}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedCardIndex(null)}
+                  className="w-full mt-6 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Chat Section */}
