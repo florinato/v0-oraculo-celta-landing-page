@@ -78,8 +78,11 @@ function ReadingContent() {
     if (pregunta && !hasInitialized.current) {
       hasInitialized.current = true
       const decodedQuestion = decodeURIComponent(pregunta)
-      const newShuffledCards = shuffleArray(tarotCards).slice(0, 10)
-      const newOrientations = Array.from({ length: 10 }, () => Math.random() > 0.5)
+      // Filter only major arcana (first 22 cards)
+      const majorArcana = tarotCards.slice(0, 22)
+      const newShuffledCards = shuffleArray(majorArcana).slice(0, 10)
+      // All cards upright - no reversals
+      const newOrientations = Array.from({ length: 10 }, () => true)
 
       setQuestion(decodedQuestion)
       setSelectedCharacter(personaje)
