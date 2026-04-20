@@ -331,22 +331,27 @@ function ReadingContent() {
     }
   }
 
-  const backgroundImage = selectedCharacter ? characterBackgrounds[selectedCharacter] : null
-
   return (
     <div className="min-h-screen bg-background relative overflow-hidden w-screen">
-      {/* Character Background with low opacity */}
-      {backgroundImage && (
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          <Image
-            src={backgroundImage || "/placeholder.svg"}
-            alt=""
-            fill
-            className="object-cover opacity-20"
-            priority
-          />
-        </div>
-      )}
+      {/* Background Image - Responsive */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Mobile image */}
+        <Image
+          src="/images/vidente.jpg"
+          alt="Vidente fondo"
+          fill
+          className="object-cover opacity-20 md:hidden"
+          priority
+        />
+        {/* Desktop/Tablet image */}
+        <Image
+          src="/images/vidente_desk.jpg"
+          alt="Vidente fondo"
+          fill
+          className="object-cover opacity-20 hidden md:block"
+          priority
+        />
+      </div>
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border overflow-hidden">
@@ -377,9 +382,9 @@ function ReadingContent() {
 
         {/* Celtic Cross Reading */}
         {showReading && (
-          <section className="w-full px-2 md:px-4 py-16">
-            <div className="max-w-6xl mx-auto">
-              <h2 className="text-4xl font-serif text-center mb-12 text-primary">Tu Tirada de la Cruz Celta</h2>
+          <section className="w-full px-2 md:px-4 py-0 mb-0">
+            <div className="max-w-6xl mx-auto mb-0">
+              <h2 className="text-4xl font-serif text-center mb-2 text-primary">Tu Tirada de la Cruz Celta</h2>
 
               <div className="grid grid-cols-4 grid-rows-5 gap-x-3 gap-y-0 md:gap-x-12 md:gap-y-14 max-w-md md:max-w-xl mx-auto relative md:h-200" style={{height: "700px", minHeight: "700px"}}>
                 {celticCrossPositions.map((positionInfo, index) => {
@@ -503,11 +508,11 @@ function ReadingContent() {
 
         {/* Chat Section */}
         {showChat && (
-          <section className="w-full px-2 md:px-4 py-16">
+          <section className="w-full px-2 md:px-4 py-0">
             <div className="max-w-4xl mx-auto px-0">
-              <h2 className="text-3xl font-serif text-center mb-8 text-primary">Interpretación y Consulta</h2>
+              <h2 className="text-3xl font-serif text-center mb-0 text-primary">Interpretación y Consulta</h2>
 
-              <Card className="bg-card/95 backdrop-blur-sm border-primary/30 rounded-none md:rounded-lg">
+              <Card className="bg-card/95 backdrop-blur-sm border-primary/30 rounded-none md:rounded-lg m-0">
                 <CardContent className="p-4 md:p-6">
                   <div className="space-y-6 mb-6 px-0">
                     {chatMessages.map((msg, index) => (
@@ -551,13 +556,13 @@ function ReadingContent() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                      className="flex-1 bg-background border-border focus:border-primary"
+                      className="flex-1 bg-rose-50/10 border-rose-300/40 focus:border-rose-400 text-foreground placeholder:text-muted-foreground"
                       disabled={isLoading}
                     />
                     <Button
                       onClick={handleSendMessage}
                       disabled={!newMessage.trim() || isLoading}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="bg-rose-400 hover:bg-rose-500 text-white font-semibold"
                     >
                       {isLoading ? <Sparkles className="w-4 h-4 animate-spin" /> : "Enviar"}
                     </Button>
