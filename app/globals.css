@@ -125,6 +125,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  textarea {
+    @apply bg-black/20 !important;
+  }
 }
 
 .card-position-name {
