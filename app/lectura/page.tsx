@@ -333,6 +333,25 @@ function ReadingContent() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden w-screen">
+      {/* Background Image - Responsive */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Mobile image */}
+        <Image
+          src="/images/vidente.jpg"
+          alt="Vidente fondo"
+          fill
+          className="object-cover opacity-20 md:hidden"
+          priority
+        />
+        {/* Desktop/Tablet image */}
+        <Image
+          src="/images/vidente_desk.jpg"
+          alt="Vidente fondo"
+          fill
+          className="object-cover opacity-20 hidden md:block"
+          priority
+        />
+      </div>
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border overflow-hidden">
