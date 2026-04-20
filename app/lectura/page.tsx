@@ -137,7 +137,7 @@ function ReadingContent() {
           cards: newShuffledCards.map((card, index) => ({
             position: index + 1,
             name: card.name,
-            is_reversed: !newOrientations[index], // Invertir la lógica: true significa invertida
+            is_reversed: false, // Siempre derechas
           })),
         }),
       })
@@ -244,7 +244,7 @@ function ReadingContent() {
             cards: shuffledCards.map((card, index) => ({
               position: index + 1,
               name: card.name,
-              is_reversed: !cardOrientations[index], // Invertir la lógica: true significa invertida
+              is_reversed: false, // Siempre derechas
             })),
           }),
         })
