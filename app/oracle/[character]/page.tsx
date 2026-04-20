@@ -87,7 +87,7 @@ export default function OracleQuestionPage() {
             <Button
               onClick={handleConsultOracle}
               disabled={!question.trim()}
-              className="w-full bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 text-white px-8 py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="w-full bg-linear-to-br from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 text-white px-8 py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               Consultar a {characterInfo.name}
             </Button>
@@ -124,7 +124,7 @@ export default function OracleQuestionPage() {
             <div className={`flex justify-center mb-8`}>
               <div
                 className={`relative w-48 h-48 rounded-full overflow-hidden border-4 ${characterInfo.borderColor} 
-              bg-gradient-to-br ${characterInfo.color} shadow-2xl`}
+              bg-linear-to-br ${characterInfo.color} shadow-2xl`}
               >
                 <Image
                   src={characterInfo.image || "/placeholder.svg"}
@@ -133,7 +133,7 @@ export default function OracleQuestionPage() {
                   height={192}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent" />
               </div>
             </div>
 
