@@ -53,16 +53,18 @@ export default function OracleQuestionPage() {
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push("/")}
-          className="absolute top-4 left-4 z-50 text-white hover:text-amber-200 hover:bg-white/10"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver
-        </Button>
+        {/* Back Button - Only for non-Aislinn characters */}
+        {character !== "aislinn" && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/")}
+            className="absolute top-4 left-4 z-50 text-white hover:text-amber-200 hover:bg-white/10"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver
+          </Button>
+        )}
 
         <div className="relative z-10 min-h-screen flex flex-col justify-end px-4 pb-8">
           <div className="w-full max-w-2xl mx-auto space-y-6">
