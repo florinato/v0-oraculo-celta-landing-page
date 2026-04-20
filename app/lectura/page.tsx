@@ -331,22 +331,8 @@ function ReadingContent() {
     }
   }
 
-  const backgroundImage = selectedCharacter ? characterBackgrounds[selectedCharacter] : null
-
   return (
     <div className="min-h-screen bg-background relative overflow-hidden w-screen">
-      {/* Character Background with low opacity */}
-      {backgroundImage && (
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          <Image
-            src={backgroundImage || "/placeholder.svg"}
-            alt=""
-            fill
-            className="object-cover opacity-20"
-            priority
-          />
-        </div>
-      )}
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border overflow-hidden">
