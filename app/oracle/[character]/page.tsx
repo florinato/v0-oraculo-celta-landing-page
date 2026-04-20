@@ -153,13 +153,13 @@ export default function OracleQuestionPage() {
                 placeholder="Escribe aquí tu pregunta para las cartas..."
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                className="min-h-32 text-lg bg-black/20 backdrop-blur-md border-2 border-rose-400/80 text-rose-100 placeholder:text-rose-300/50 focus:border-rose-500 resize-none"
+                className="min-h-32 text-lg !bg-black/20 backdrop-blur-md !border-2 !border-rose-400/80 !text-rose-100 !placeholder-rose-300/50 focus:!border-rose-500 resize-none"
               />
 
               <Button
                 onClick={handleConsultOracle}
                 size="lg"
-                className="w-full md:w-auto px-12 py-4 text-lg font-semibold bg-rose-400 hover:bg-rose-500 text-white"
+                className="w-full md:w-auto px-12 py-4 text-lg font-semibold !bg-rose-400 hover:!bg-rose-500 !text-white"
                 disabled={!question.trim()}
               >
                 Consultar a {characterInfo.name}
