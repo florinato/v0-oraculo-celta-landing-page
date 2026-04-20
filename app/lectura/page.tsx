@@ -441,7 +441,7 @@ function ReadingContent() {
             onClick={() => setSelectedCardIndex(null)}
           >
             <div
-              className="bg-card/95 backdrop-blur-md border-2 border-primary/40 rounded-xl p-8 md:p-12 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+              className="bg-card/95 backdrop-blur-md border-2 border-primary/40 rounded-xl p-8 md:p-12 max-w-2xl w-full max-h-[95vh] overflow-y-auto shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
@@ -466,7 +466,7 @@ function ReadingContent() {
 
                 {/* Card Image */}
                 <div className="flex justify-center">
-                  <div className="relative w-48 h-72 rounded-lg overflow-hidden shadow-2xl border-2 border-primary/40">
+                  <div className="relative w-60 h-96 rounded-lg overflow-hidden shadow-2xl border-2 border-primary/40">
                     <Image
                       src={shuffledCards[selectedCardIndex].image || "/placeholder.svg"}
                       alt={shuffledCards[selectedCardIndex].name}
