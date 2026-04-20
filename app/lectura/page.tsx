@@ -503,9 +503,9 @@ function ReadingContent() {
 
         {/* Chat Section */}
         {showChat && (
-          <section className="w-full px-2 md:px-4 py-4">
+          <section className="w-full px-2 md:px-4 py-0">
             <div className="max-w-4xl mx-auto px-0">
-              <h2 className="text-3xl font-serif text-center mb-3 text-primary">Interpretación y Consulta</h2>
+              <h2 className="text-3xl font-serif text-center mb-0 text-primary">Interpretación y Consulta</h2>
 
               <Card className="bg-card/95 backdrop-blur-sm border-primary/30 rounded-none md:rounded-lg">
                 <CardContent className="p-4 md:p-6">
