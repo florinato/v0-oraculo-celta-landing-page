@@ -556,13 +556,13 @@ function ReadingContent() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                      className="flex-1 bg-background border-border focus:border-primary"
+                      className="flex-1 bg-rose-50/10 border-rose-300/40 focus:border-rose-400 text-foreground placeholder:text-muted-foreground"
                       disabled={isLoading}
                     />
                     <Button
                       onClick={handleSendMessage}
                       disabled={!newMessage.trim() || isLoading}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="bg-rose-400 hover:bg-rose-500 text-white font-semibold"
                     >
                       {isLoading ? <Sparkles className="w-4 h-4 animate-spin" /> : "Enviar"}
                     </Button>
